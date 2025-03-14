@@ -1,149 +1,123 @@
-window.onload = async function () {
-    const temperatureData = await fetchData('temperature');
+        // Initial setup when page loads
+        window.onload = async function () {
+            const temperatureData = await fetchData('temperature');
+            createChart('temperatureChart', temperatureData, 'Temperature Readings', 'Temperature');
+            switchTab('chat'); // Default to Outfit tab
+        };
 
-    // Create the charts with decimation enabled
-    createChart('temperatureChart', temperatureData, 'Temperature Readings', 'Temperature');
-};
+        // Fetch data from the API
+        async function fetchData(sensorType) {
+            const response = await fetch(`http://localhost:8000/api/${sensorType}`);
+            const data = await response.json();
+            
+            if (sensorType === 'temperature') {
+                const filteredData = data.filter(entry => {
+                    const entryDate = new Date(entry.timestamp);
+                    return entryDate >= new Date("2025-01-01T00:00:00");
+                });
+                return filteredData.map(entry => ({
+                    x: new Date(entry.timestamp),
+                    y: entry.value
+                }));
+            } 
+        }
 
-// Fetch data from the API
-async function fetchData(sensorType) {
-    const response = await fetch(`http://localhost:8000/api/${sensorType}`);
-    const data = await response.json();
-    
-    // For temperature, only include data from 2025 and plot every point
-    if (sensorType === 'temperature') {
-        const filteredData = data.filter(entry => {
-            const entryDate = new Date(entry.timestamp);
-            return entryDate >= new Date("2025-01-01T00:00:00");
-        });
-        return filteredData.map(entry => ({
-            x: new Date(entry.timestamp),
-            y: entry.value
-        }));
-    } 
-}
+        // Create the chart
+        function createChart(chartId, data, chartTitle, label) {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const chartContainer = document.getElementById(chartId).parentElement;
+            const titleElement = document.createElement('h3');
+            titleElement.textContent = chartTitle;
+            chartContainer.insertBefore(titleElement, chartContainer.firstChild);
 
-// Create the chart for each sensor type
-function createChart(chartId, data, chartTitle, label) {
-    const ctx = document.getElementById(chartId).getContext('2d');
-
-    // Add title above the chart
-    const chartContainer = document.getElementById(chartId).parentElement;
-    const titleElement = document.createElement('h3');
-    titleElement.textContent = chartTitle;
-    chartContainer.insertBefore(titleElement, chartContainer.firstChild);
-
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            datasets: [{
-                label: label,
-                data: data,
-                borderColor: 'rgb(75, 192, 192)',
-                tension: 0.1,
-                fill: false,
-                pointRadius: 0 // Hides the data point markers
-            }]
-        },
-        options: {
-            plugins: {
-                decimation: {
-                    enabled: true,
-                    algorithm: 'min-max', // Options: 'min-max', 'lttb'
-                    threshold: 100 // Number of points after which decimation is triggered
-                }
-            },
-            scales: {
-                x: {
-                    type: 'time',
-                    time: {
-                        unit: 'minute',
-                        tooltipFormat: 'll HH:mm'
-                    },
-                    title: {
-                        display: true,
-                        text: 'Time'
-                    }
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false,
+                        pointRadius: 0
+                    }]
                 },
-                y: {
-                    title: {
-                        display: true,
-                        text: label
+                options: {
+                    plugins: {
+                        decimation: {
+                            enabled: true,
+                            algorithm: 'min-max',
+                            threshold: 100
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                tooltipFormat: 'll HH:mm'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: label
+                            }
+                        }
                     }
                 }
+            });
+        }
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Handle sending chat messages
+        async function sendMessage() {
+            const userMessage = document.getElementById("user-message").value;
+            if (userMessage.trim() === "") return;
+
+            addMessage(userMessage, "user");
+            document.getElementById("user-message").value = "";
+
+            try {
+                const response = await fetch("http://localhost:8000/get-chat-response", { 
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ prompt: userMessage })
+                });
+
+                const data = await response.json();
+                addMessage(data.response || "Sorry, I couldn't understand that.", "ai");
+            } catch (error) {
+                console.error("Error sending message:", error);
+                addMessage("Error. Please try again.", "ai");
             }
         }
-    });
-}
 
-// Handle "What Should I Wear" button click
-async function getOutfitSuggestion() {
-    try {
-        // Show loading message
-        document.getElementById("ai-response").innerText = "Fetching outfit recommendation...";
+        // Add a new message to the chat
+        function addMessage(message, sender) {
+            const chatBox = document.getElementById("chat-box");
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message-bubble", sender === "user" ? "user-bubble" : "ai-bubble");
+            messageElement.textContent = message;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
 
-        // Make the API request
-        const response = await fetch("http://localhost:8000/get-outfit", { 
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        });
-
-        // Parse response
-        const data = await response.json();
-
-        // Display the response from the AI
-        document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-        document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
-    }
-}
-
-// Toggle chat visibility
-function toggleChat() {
-    const chatContainer = document.getElementById("chat-container");
-    chatContainer.style.display = (chatContainer.style.display === "none" || chatContainer.style.display === "") ? "block" : "none";
-}
-
-// Send user message and get AI response
-async function sendMessage() {
-    const userMessage = document.getElementById("user-message").value;
-    if (userMessage.trim() === "") return;
-
-    // Display user message
-    addMessage(userMessage, "user");
-
-    // Clear input field
-    document.getElementById("user-message").value = "";
-
-    try {
-        // Make API call to get AI response
-        const response = await fetch("http://localhost:8000/get-chat-response", { 
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ prompt: userMessage })
-        });
-
-        const data = await response.json();
-        const aiMessage = data.response || "Sorry, I couldn't understand that.";
-
-        // Display AI response
-        addMessage(aiMessage, "ai");
-    } catch (error) {
-        console.error("Error fetching AI response:", error);
-    }
-}
-
-// Add message to chat box
-function addMessage(message, sender) {
-    const chatBox = document.getElementById("chat-box");
-    const messageBubble = document.createElement("div");
-    messageBubble.classList.add("message-bubble");
-    messageBubble.classList.add(sender === "user" ? "user-bubble" : "ai-bubble");
-    messageBubble.textContent = message;
-    chatBox.appendChild(messageBubble);
-    chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
-}
+        // Generate an image
 
 async function generateImage() {
     const prompt = document.getElementById("image-prompt").value.trim();
@@ -180,4 +154,4 @@ async function generateImage() {
         console.error("Error generating image:", error);
         document.getElementById("ai-response").innerText = "Error occurred while generating image.";
     }
-}
+    }

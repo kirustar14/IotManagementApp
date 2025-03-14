@@ -3,66 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome!!! IoT Wardrobe Management App</title>
+    <title>IoT Wardrobe Management App</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4); /* Midnight blue gradient */
+            font-family: 'Dancing Script', cursive, sans-serif; /* Elegant cursive font */
+            color: #fff; /* White text for contrast */
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
         }
-        header {
-            text-align: center;
-            padding: 40px 0;
-            background-color: #f4f4f9;
-        }
-        h1 {
+
+        h1, h2, p {
             margin: 0;
-            font-size: 2.5em;
-            color: #2C3E50;
+            padding: 0;
         }
+
+        /* Header */
+        header {
+            color: #fff;
+            padding: 30px 30px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+            animation: fadeInHeader 1.8s ease-in-out;
+        }
+
+
+        /* Section Styling */
         section {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.212); /* Soft transparent background */
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Blur effect for seamless integration */
+            animation: fadeIn 2s ease-out;
             text-align: center;
         }
+
         .description {
-            font-size: 1.3em;
+            font-size: 1.5em;
+            color: #fff; /* White text */
             margin-bottom: 30px;
-            color: #555;
+            text-align: center;
+            line-height: 1.7;
         }
+
         .team-description {
             font-size: 1.2em;
-            margin-bottom: 40px;
-            color: #777;
-            line-height: 1.5;
+            color: white; /* Light grey text */
+            margin-bottom: 50px;
+            text-align: center;
+            line-height: 1.6;
         }
+
+        .team-description p {
+            margin-bottom: 20px;
+        }
+
+        /* Button Styling */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
         a {
-            text-decoration: none;
-            font-weight: 500;
-            padding: 12px 30px;
-            background-color: #3498DB;
-            color: white;
-            border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-            margin: 10px;
             display: inline-block;
+            text-decoration: none;
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #1abc9c, #16a085); /* Elegant gradient buttons */
+            color: white;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
         a:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
+        a:active {
+            transform: translateY(1px);
+        }
+
+        /* Footer */
         footer {
             text-align: center;
             padding: 20px;
             font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
+            color: black;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            margin-top: 60px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInHeader {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.8em;
+            }
+
+            section {
+                padding: 30px;
+            }
+
+            a {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
         }
     </style>
+    <!-- Google Font for Dancing Script -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -70,15 +160,13 @@
     </header>
     <section>
         <div class="description">
-            <p>Manage your wardrobe with real-time environmental data from IoT devices. Get personalized clothing recommendations based on your current weather conditions!</p>
+            <p>Seamlessly manage your wardrobe with real-time environmental data from IoT devices. Receive personalized clothing suggestions based on weather conditions to stay stylish and comfortable!</p>
         </div>
         <div class="team-description">
             <p>Developed By: Kiruthika Marikumaran</p>
-            <p> I am a 2nd year computer engineering major at UC San Diego. I enjoy reading and
-                playing video games. And I am passionate about software development, embedded systems and robotics! 
-            </p>
+            <p>I'm a 2nd-year Computer Engineering major at UC San Diego, passionate about software development, robotics, and embedded systems. In my free time, I enjoy reading, playing video games, and exploring new tech trends.</p>
         </div>
-        <div>
+        <div class="button-container">
             <a href="/login">Login</a>
             <a href="/signup">Sign Up</a>
         </div>

@@ -44,25 +44,33 @@ document.addEventListener("DOMContentLoaded", function () {
             const conditionText = `Condition: ${weather.shortForecast}`;
             const tempText = `Temperature: ${weather.temperature}°F`;
 
-            // Step 4: Fetch images from Unsplash
-            const cityImageUrl = getUnsplashImage(city);
-            const weatherImageUrl = getUnsplashImage(weather.shortForecast);
-
             // Step 5: Update the HTML with weather information
             info.innerHTML = `
                 <p><strong>${locationText}</strong></p>
                 <p>${conditionText}</p>
                 <p>${tempText}</p>
-                <img src="${cityImageUrl}" alt="City view of ${city}" width="300">
-                <img src="${weatherImageUrl}" alt="Weather condition: ${weather.shortForecast}" width="150">
             `;
         } catch (error) {
             console.error("Error fetching weather data:", error);
         }
     });
 
-    // Function to fetch an image from Unsplash
-    function getUnsplashImage(query) {
-        return `https://source.unsplash.com/400x300/?${query}`;
+}); 
+
+
+// Handle "What Should I Wear" button click
+async function getOutfitSuggestion() {
+    try {
+        document.getElementById("ai-response").innerText = "Fetching outfit recommendation...";
+        const response = await fetch("http://localhost:8000/get-outfit", { 
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await response.json();
+        document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
+    } catch (error) {
+        console.error("Error fetching AI response:", error);
+        document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
-});
+}

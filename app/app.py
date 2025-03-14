@@ -489,8 +489,8 @@ async def register_device(
                 "message": message,  
                 "back_to_profile": True 
             }
-        )
-
+        ) 
+ 
 
 @app.get("/view_devices/{name}", response_class=HTMLResponse)
 async def view_devices(request: Request, name: str):

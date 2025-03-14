@@ -1,71 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome to Your Profile</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4); /* Midnight blue gradient */
+            font-family: 'Dancing Script', cursive, sans-serif; /* Elegant cursive font */
+            color: #fff; /* White text for contrast */
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
         }
-        header {
-            text-align: center;
-            padding: 40px 0;
-            background-color: #f4f4f9;
-        }
-        h1 {
+
+        h1, h2, p {
             margin: 0;
-            font-size: 2.5em;
-            color: #2C3E50;
+            padding: 0;
         }
+
+        /* Header */
+        header {
+            color: #fff;
+            padding: 30px 30px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+            animation: fadeInHeader 1.8s ease-in-out;
+        }
+
+        /* Section Styling */
         .container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 900px;
+            margin-top: 150px;
+            margin-left: 50px; 
+            margin-right: 50px; 
+            margin-bottom: 150px;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.212); /* Soft transparent background */
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Blur effect for seamless integration */
+            animation: fadeIn 2s ease-out;
             text-align: center;
         }
-        .button {
+
+        /* Scrollable button container */
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 20px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .button-container a {
             display: inline-block;
-            padding: 12px 30px;
-            background-color: #3498DB;
-            color: white;
-            border-radius: 30px;
             text-decoration: none;
-            font-weight: 500;
-            transition: background-color 0.3s, transform 0.2s;
-            margin: 10px;
-        }
-        .button:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
-        }
-        .logout-button {
-            padding: 10px 20px;
-            background-color: #f44336;
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #1abc9c, #16a085); /* Elegant gradient buttons */
             color: white;
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: background-color 0.3s, transform 0.2s;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center; /* Centering text inside buttons */
+            white-space: nowrap;
         }
+
+        .button-container a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .button-container a:active {
+            transform: translateY(1px);
+        }
+
+        /* Logout button styling */
+        .logout-button {
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            color: white;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center; /* Centering text inside button */
+            border: none; /* Removed black outline */
+        }
+
         .logout-button:hover {
-            background-color: #d32f2f;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
+        .logout-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Footer */
         footer {
             text-align: center;
-            padding: 20px;
-            font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
+            padding: 5px; /* Reduced footer padding */
+            font-size: 0.8em;
+            color: black;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            margin-top: 60px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInHeader {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.8em;
+            }
+
+            .container {
+                padding: 30px;
+            }
+
+            .button-container {
+                flex-wrap: wrap; /* Allow wrapping on smaller screens */
+                justify-content: center;
+            }
+
+            .button-container a {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
         }
     </style>
+    <!-- Google Font for Dancing Script -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -73,11 +176,13 @@
     </header>
 
     <div class="container">
-        <a id="wardrobe-button" class="button" href="">Go to Wardrobe</a>
-        <a id="register-device-button" class="button" href="">Register a Device</a>
-        <a id="view-devices-button" class="button" href="">View All Devices</a>
-        <a id="dashboard-button" class="button" href="">Dashboard</a>
-        <a id="weather-button" class="button" href="">Weather Forecast</a>
+        <div class="button-container">
+            <a id="wardrobe-button" href="">Go to Wardrobe</a>
+            <a id="register-device-button" href="">Register a Device</a>
+            <a id="view-devices-button" href="">View All Devices</a>
+            <a id="dashboard-button" href="">Dashboard</a>
+            <a id="weather-button" href="">Weather Forecast</a>
+        </div>
         <form action="/logout" method="POST" style="margin-top: 20px;">
             <button class="logout-button" type="submit">Logout</button>
         </form>
@@ -101,4 +206,4 @@
         };
     </script>
 </body>
-</html> 
+</html>

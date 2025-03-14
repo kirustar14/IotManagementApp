@@ -5,113 +5,132 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather App</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            font-family: 'Dancing Script', cursive, sans-serif;
+            color: #fff;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
+            text-align: center;
         }
+
         header {
+            padding: 30px;
             text-align: center;
-            padding: 40px 0;
-            background-color: #f4f4f9;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
+
         h1 {
-            margin: 0;
-            font-size: 2.5em;
-            color: #2C3E50;
+            font-size: 3.5em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: fadeInHeader 1.8s ease-in-out;
         }
+
         section {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 30px 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 2s ease-out;
         }
+
         .description {
-            font-size: 1.3em;
-            margin-bottom: 30px;
-            color: #555;
+            font-size: 1.5em;
+            color: #fff;
         }
-        .info {
-            font-size: 1.2em;
-            color: #777;
-            margin-top: 20px;
-        }
+
         form {
             margin-top: 20px;
-            text-align: center;
         }
-        label {
-            font-size: 1.1em;
-            margin-right: 10px;
-        }
+
         input[type="text"] {
-            padding: 10px;
-            font-size: 1rem;
-            margin-top: 10px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
+            padding: 12px;
+            font-size: 1.1rem;
+            border-radius: 20px;
+            border: none;
             margin-right: 10px;
+            outline: none;
         }
+
+        input[type="submit"], .profile-button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
         input[type="submit"] {
-            padding: 12px 30px;
-            font-size: 1rem;
-            background-color: #3498DB;
+            background: linear-gradient(145deg, #1abc9c, #16a085);
             color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.3s, transform 0.2s;
         }
-        input[type="submit"]:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+
+        input[type="submit"]:hover, .profile-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
-        }
+
         .profile-button {
-            padding: 12px 30px;
-            font-size: 1rem;
-            background-color: #2ecc71;
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
             color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.3s, transform 0.2s;
             margin-top: 20px;
         }
-        .profile-button:hover {
-            background-color: #27ae60;
-            transform: translateY(-2px);
+
+        footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            color: black;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            margin-top: 60px;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInHeader {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8em; }
+            section { padding: 30px; }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Check the Weather</h1>
+        <h1>Check the Weather</h1> 
     </header>
 
     <section>
         <div class="description">
-            <p>Enter the name of a city to get the current weather conditions and personalized clothing suggestions based on the weather.</p>
+            <p>Enter the name of a city to get the current weather conditions and personalized clothing suggestions based on the weather</p>
         </div>
 
-        <!-- Weather Form -->
         <form id="weather-form">
-            <label for="city">Enter City Name:</label>
-            <input type="text" id="city" required>
+            <input type="text" id="city" required placeholder="Enter City Name">
             <input type="submit" value="Get Weather">
         </form>
-
         <span class="info"></span>
-        <button class="profile-button" onclick="window.location.href='http://localhost:8000/profile/{{name}}'">Go to Profile</button>
+        <button class="profile-button" onclick="window.location.href='http://localhost:8000/profile/{{name}}'">Profile</button>
     </section>
 
     <footer>
@@ -121,3 +140,14 @@
     <script src="/static/weather.js"></script>
 </body>
 </html>
+
+
+
+
+THIS PART IS TO BE ADDED 
+<div id="outfit" class="tab-content">
+    <div class="response-container">
+        <div id="ai-response">What should I wear today?</div>
+        <button onclick="getOutfitSuggestion()">Get Outfit Suggestion</button>
+    </div>
+</div>

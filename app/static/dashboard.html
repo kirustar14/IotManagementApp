@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{name}} Dashboard</title>
-
     <!-- Include Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-decimation"></script>
@@ -13,95 +12,150 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            font-family: 'Dancing Script', cursive, sans-serif;
+            color: #fff;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
         }
-        header {
-            text-align: center;
-            padding: 40px 0;
-            background-color: #3498db;
-            color: white;
-        }
-        h1 {
+
+        h1, h2, p {
             margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
+        header {
+            color: #fff;
+            padding: 30px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
             font-size: 2.5em;
-            color: white;
+            margin-bottom: 10px;
         }
-        .chart-container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 20px;
-            text-align: center;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        button {
-            padding: 12px 30px;
-            font-size: 1rem;
-            margin: 10px;
-            cursor: pointer;
-            border: none;
-            background-color: #3498db;
-            color: white;
-            border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        button:hover {
+
+        /* Top Right Button */
+        .profile-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             background-color: #2980b9;
-            transform: translateY(-2px);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        .response-container {
-            max-width: 800px;
-            margin: 30px auto;
+
+        .profile-button:hover {
+            background-color: #2b516a;
+        }
+
+        /* Container with Chart and Panel */
+        .container {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
             padding: 20px;
-            background-color: #fff;
+            gap: 20px;
+        }
+
+        /* Chart Container */
+        .chart-container {
+            flex: 1 1 45%; /* Set to 45% width for better responsiveness */
+            background-color: #ffffff;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 24rem;
+            color: black;
         }
-        #ai-response {
-            font-size: 1.2rem;
+
+        /* Panel Container */
+        .panel-container {
+            flex: 1 1 45%;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-height: 24rem;
+            overflow: auto;
+        }
+
+        /* Dropdown for tab selection */
+        .dropdown-container {
             margin-top: 20px;
-            color: #555;
+            display: flex;
+            justify-content: center;
         }
-        #ai-image {
+
+        /* Dropdown for tab selection */
+        .dropdown-container p {
+            display: flex;
+            margin-right: 25rem;
+            font-size: 1.5rem;
+        }
+
+        .dropdown-container select {
+            padding: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            background: linear-gradient(145deg, #1abc9c, #16a085);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-container select:hover {
+            background-color: #2980b9;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
             display: block;
-            margin: 20px auto;
-            max-width: 300px;
-            border-radius: 10px;
         }
+
+        /* Chatbox Styling */
         .chat-container {
-            max-width: 800px;
-            margin: 20px auto;
-            background-color: #fff;
             padding: 15px;
+            background-color: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .message-bubble {
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 15px;
             max-width: 70%;
         }
+
         .user-bubble {
             background-color: #3498db;
             color: white;
             margin-left: auto;
         }
+
         .ai-bubble {
             background-color: #f1f1f1;
             color: #333;
         }
+
         input[type="text"] {
             width: 100%;
             padding: 10px;
@@ -109,6 +163,22 @@
             margin-top: 10px;
             border-radius: 5px;
             border: 1px solid #ddd;
+        }
+
+        /* Buttons above each panel */
+        .button-container button {
+            padding: 12px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        .button-container button:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
@@ -118,43 +188,161 @@
         <h1>{{name}} Dashboard</h1>
     </header>
 
-    <!-- Temperature Chart -->
-    <div class="chart-container">
-        <canvas id="temperatureChart"></canvas>
-    </div>
+    <!-- Profile Button linking to profile page -->
+    <button class="profile-button" onclick="window.location.href='/profile/{{name}}'">Profile</button>
 
-    <!-- Buttons -->
-    <div class="button-container">
-        <button onclick="getOutfitSuggestion()">What Should I Wear Today?</button>
-        <button onclick="toggleChat()">Chat!</button>
-        <button id="dashboard-button" class="button" onclick="window.location.href='/profile/{{ name }}'">Profile</button>
+    <div class="dropdown-container">
+        <p>Sensor Data</p>
+        <select onchange="switchTab(this.value)">
+            <option value="chat">Chat</option>
+            <option value="outfit">Outfit Recommendations</option>
+            <option value="image">Image Generation</option>
+        </select>
     </div>
+    
+    <div class="container">
+        <!-- Temperature Chart -->
+        <div class="chart-container">
+            <canvas id="temperatureChart"></canvas>
+        </div>
+        <!-- Panel with Tabs -->
+        <div class="panel-container">
+            <!-- Tab Contents -->
+            <div id="chat" class="tab-content">
+                <div class="chat-container">
+                    <div id="chat-box"></div>
+                    <input type="text" id="user-message" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
+                </div>
+            </div>
 
-    <!-- AI Response Display -->
-    <div class="response-container">
-        <div id="ai-response"></div>
-        <img id="ai-image" src="" alt="" style="display:none;">
+            <div id="outfit" class="tab-content">
+                <div class="response-container">
+                    <div id="ai-response">What should I wear today?</div>
+                    <button onclick="getOutfitSuggestion()">Get Outfit Suggestion</button>
+                </div>
+            </div>
+
+            <div id="image" class="tab-content">
+                <div class="response-container">
+                    <input type="text" id="image-prompt" placeholder="Enter image description...">
+                    <button onclick="generateImage()">Generate Image</button>
+                    <img id="ai-image" src="" alt="Generated Image" style="display:none; max-width: 500px; border-radius: 10px;">
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Chat Feature -->
-    <div id="chat-container" class="chat-container" style="display:none;">
-        <div id="chat-box"></div>
-        <input type="text" id="user-message" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
-    </div>
-
-    <!-- Add this inside the button container -->
-    <div class="button-container">
-        <input type="text" id="image-prompt" placeholder="Enter image description..." style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ddd;">
-        <button onclick="generateImage()">Generate Image</button>
-    </div>
-
-    <!-- Modify the AI Response Display -->
-    <div class="response-container">
-        <div id="ai-response"></div>
-        <img id="ai-image" src="" alt="Generated Image" style="display:none; max-width: 500px; border-radius: 10px;">
-    </div>
-
 
     <script src="/static/dashboard.js"></script>
+
+    <script>
+        // Initial setup when page loads
+        window.onload = async function () {
+            const temperatureData = await fetchData('temperature');
+            createChart('temperatureChart', temperatureData, 'Temperature Readings', 'Temperature');
+            switchTab('chat'); // Default to Outfit tab
+        };
+
+        // Fetch data from the API
+        async function fetchData(sensorType) {
+            const response = await fetch(`http://localhost:8000/api/${sensorType}`);
+            const data = await response.json();
+            
+            if (sensorType === 'temperature') {
+                const filteredData = data.filter(entry => {
+                    const entryDate = new Date(entry.timestamp);
+                    return entryDate >= new Date("2025-01-01T00:00:00");
+                });
+                return filteredData.map(entry => ({
+                    x: new Date(entry.timestamp),
+                    y: entry.value
+                }));
+            } 
+        }
+
+        // Create the chart
+        function createChart(chartId, data, chartTitle, label) {
+            const ctx = document.getElementById(chartId).getContext('2d');
+            const chartContainer = document.getElementById(chartId).parentElement;
+            const titleElement = document.createElement('h3');
+            titleElement.textContent = chartTitle;
+            chartContainer.insertBefore(titleElement, chartContainer.firstChild);
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [{
+                        label: label,
+                        data: data,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    plugins: {
+                        decimation: {
+                            enabled: true,
+                            algorithm: 'min-max',
+                            threshold: 100
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                tooltipFormat: 'll HH:mm'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Time'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: label
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Switch between tabs
+        function switchTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show the selected tab
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        // Handle "What Should I Wear?" button click
+        async function getOutfitSuggestion() {
+            const outfitResponse = await fetch("http://localhost:8000/api/outfit");
+            const data = await outfitResponse.json();
+            document.getElementById("ai-response").textContent = data.suggestion;
+        }
+
+        // Handle Image Generation button click
+        async function generateImage() {
+            const prompt = document.getElementById('image-prompt').value;
+            const response = await fetch(`http://localhost:8000/api/image`, {
+                method: 'POST',
+                body: JSON.stringify({ prompt }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            const image = document.getElementById('ai-image');
+            image.src = data.image_url;
+            image.style.display = 'block';
+        }
+    </script>
 </body>
 </html>

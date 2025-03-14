@@ -5,71 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Added - IoT Wardrobe</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4); /* Midnight blue gradient */
+            font-family: 'Dancing Script', cursive, sans-serif; /* Elegant cursive font */
+            color: #fff; /* White text for contrast */
             margin: 0;
             padding: 0;
-            text-align: center;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
         }
+
+        h1, h2, label, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Header */
         header {
-            background-color: #f4f4f9;
-            padding: 40px 0;
+            color: #fff;
+            padding: 30px 30px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
-        h1 {
-            font-size: 2em;
-            color: #2C3E50;
+
+        header h1 {
+            font-size: 4em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: fadeInHeader 1.8s ease-in-out;
         }
+
+        /* Section */
         section {
             max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin: 100px auto;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.212); /* Soft transparent background */
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Blur effect for seamless integration */
+            animation: fadeIn 2s ease-out;
+            text-align: center;
         }
+
         p {
             font-size: 1.2em;
-            color: #555;
+            color: #fff;
         }
-        a {
+
+        /* Links Section */
+        .links a {
+            display: inline-block;
             text-decoration: none;
-            font-weight: 500;
+            font-size: 1em;
             padding: 12px 30px;
-            background-color: #3498DB;
+            background: linear-gradient(145deg, #1abc9c, #16a085); /* Elegant gradient buttons */
             color: white;
             border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-            display: inline-block;
+            transition: all 0.3s ease;
             margin-top: 20px;
         }
-        a:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+
+        .links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
-            margin-top: 50px;
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInHeader {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.8em;
+            }
+
+            section {
+                padding: 20px;
+            }
+
+            .links {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
+    <!-- Google Font for Dancing Script -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
         <h1>IoT Wardrobe Management</h1>
     </header>
+
     <section>
         <h2>Item Added Successfully!</h2>
-        <p>Your item has been successfully added to your wardrobe.</p>
-        <a href="/wardrobe/{{ name }}">Back to Wardrobe</a>
+        <div class="links">
+            <a href="/wardrobe/{{ name }}">Back to Wardrobe</a>
+        </div>
     </section>
-    <footer>
-        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
-    </footer>
 </body>
 </html>

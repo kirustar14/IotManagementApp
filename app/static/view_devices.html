@@ -6,33 +6,38 @@
     <title>View Devices</title>
     <style>
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
-            margin: 0;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            font-family: 'Dancing Script', cursive, sans-serif;
+            color: #fff;
+            margin: 0; 
             padding: 0;
-            line-height: 1.6;
-        }
+            line-height: 1.8;
+            overflow-x: hidden; 
+            font-weight: 300; 
+        } 
         header {
+            color: #fff;
+            padding: 30px;
             text-align: center;
-            padding: 40px 0;
-            background-color: #f4f4f9;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
         }
-        h1 {
-            margin: 0;
+        header h1 {
             font-size: 2.5em;
-            color: #2C3E50;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+            animation: fadeInHeader 1.8s ease-in-out;
         }
         .container {
-            max-width: 1000px;
-            margin: 40px auto;
+            max-width: 800px;
+            margin: 50px auto;
             padding: 20px;
-            text-align: center;
-        }
-        .description {
-            font-size: 1.3em;
-            margin-bottom: 30px;
-            color: #555;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 2s ease-out;
+            text-align: center; 
         }
         table {
             width: 100%;
@@ -43,82 +48,93 @@
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #ddd;
+            color: #fff;
         }
         th {
-            background-color: #f8f8f8;
+            background-color: rgba(255, 255, 255, 0.3);
         }
         button {
             padding: 8px 12px;
             font-size: 14px;
-            color: #fff;
-            background-color: #e74c3c;
+            color: white;
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.3s ease;
         }
         button:hover {
-            background-color: #c0392b;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         .back-link a {
-            text-decoration: none;
-            font-weight: 500;
-            padding: 12px 30px;
-            background-color: #3498DB;
-            color: white;
-            border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-            margin: 10px;
             display: inline-block;
+            text-decoration: none;
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #1abc9c, #16a085);
+            color: white;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px;
         }
         .back-link a:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         footer {
             text-align: center;
             padding: 20px;
             font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
+            color: black;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            margin-top: 200px; 
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInHeader {
+            0% { opacity: 0; transform: translateY(-30px); }
+            100% { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>Registered Devices - {{ name }} </h1>
+        <h1> View Devices </h1>
     </header>
     
     <div class="container">
-        <div class="description">
-            {% if devices %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Device ID</th>
-                            <th>Device Name</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for device in devices %}
-                        <tr>
-                            <td>{{ device.device_id }}</td>
-                            <td>{{ device.device_name }}</td>
-                            <td>
-                                <form method="POST" action="/delete_device/{{ name }}/{{ device.device_id }}">
-                                    <button type="submit">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No devices registered.</p>
-            {% endif %}
-        </div>
+        {% if devices %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Device ID</th>
+                        <th>Device Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for device in devices %}
+                    <tr>
+                        <td>{{ device.device_id }}</td>
+                        <td>{{ device.device_name }}</td>
+                        <td>
+                            <form method="POST" action="/delete_device/{{ name }}/{{ device.device_id }}">
+                                <button type="submit">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No devices registered.</p>
+        {% endif %}
 
         <div class="back-link">
             <a href="/register_device/{{ name }}">Register a New Device</a>

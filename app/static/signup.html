@@ -5,132 +5,182 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <style>
-        /* General body styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
+        /* Global Reset */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            font-family: 'Dancing Script', cursive, sans-serif;
+            color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 50px; /* Added space between the top and the form */
         }
 
-        /* Container for the sign-up form */
-        .signup-container {
-            background-color: #fff;
+        /* Main Form Container */
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.2); /* Slight transparent background */
+            border-radius: 15px;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 400px;
+            max-width: 500px; /* Adjusted width */
+            min-height: 450px; /* Set a minimum height */
             text-align: center;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Blur effect for seamless integration */
+            animation: fadeIn 2s ease-out;
         }
 
-        /* Heading styles */
-        h1 {
-            font-size: 24px;
+        h2 {
             margin-bottom: 20px;
-            color: #2C3E50;
+            font-size: 2.5em;
+            color: #fff;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* Input field styling */
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .form-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        label {
+            margin-bottom: 8px;
+            font-size: 1.2em;
+            color: #fff;
+            width: 30%; /* Adjust the label width */
+            text-align: left;
+        }
+
         input[type="text"],
         input[type="password"],
         input[type="email"] {
-            width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1.1em;
             color: #333;
+            width: 65%; /* Adjust the input field width */
+            text-align: center;
+            background-color: #f4f4f4;
         }
 
-        /* Input field focus styling */
         input[type="text"]:focus,
         input[type="password"]:focus,
         input[type="email"]:focus {
-            border-color: #3498DB;
             outline: none;
+            border-color: #1abc9c;
         }
 
-        /* Label styling */
-        label {
-            font-size: 14px;
-            text-align: left;
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-        /* Button styling */
-        button {
-            padding: 12px 20px;
-            background-color: #3498DB;
-            color: #fff;
+        button[type="submit"] {
+            padding: 12px;
+            background: linear-gradient(145deg, #1abc9c, #16a085);
+            color: white;
+            font-size: 1.2em;
+            border-radius: 25px;
             border: none;
-            border-radius: 30px;
-            font-size: 16px;
             cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-            margin-top: 20px;
+            width: 85%; /* Adjusted width */
+            transition: transform 0.3s ease;
         }
 
-        /* Hover effect for buttons */
-        button:hover {
-            background-color: #2980B9;
+        button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        /* Login link styling */
+        button[type="submit"]:active {
+            transform: translateY(1px);
+        }
+
+        /* Footer Section */
         p {
-            font-size: 14px;
             margin-top: 20px;
-            color: #555;
+            font-size: 1.1em;
+            color: #fff;
         }
 
         a {
             text-decoration: none;
-            color: #3498DB;
+            color: #fff;
         }
 
-        a:hover {
-            text-decoration: underline;
+        footer {
+            width: 100%;
+            text-align: center;
+            color: #fff;
+            font-size: 0.9em;
+            padding: 10px;
+            position: relative;
+            bottom: 0;
         }
 
-        /* Small screen responsiveness */
-        @media (max-width: 600px) {
-            .signup-container {
-                width: 90%;
+        footer a {
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
     </style>
 </head>
 <body>
-
-    <div class="signup-container">
-        <h1>Sign Up</h1>
+    <div class="form-container">
+        <h2>Create Your Account</h2>
         <form action="/signup" method="post">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" required>
+            <div class="form-row">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
+            <div class="form-row">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
+            </div>
 
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
+            <div class="form-row">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
 
-            <label for="location">Location:</label>
-            <input type="text" id="location" name="location" required>
+            <div class="form-row">
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
 
             <button type="submit">Sign Up</button>
         </form>
 
-        <p>Already have an account? <a href="/login"><button type="button">Login</button></a></p>
+        <p>Already have an account? <a href="/login">Login here</a></p>
     </div>
 
+    <footer>
+        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
+    </footer>
 </body>
 </html>

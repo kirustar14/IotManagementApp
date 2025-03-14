@@ -5,42 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Device Registration</title>
     <style>
+        /* Global Styles */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fff;
-            color: #333;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4); /* Midnight blue gradient */
+            font-family: 'Dancing Script', cursive, sans-serif; /* Elegant cursive font */
+            color: #fff; /* White text for contrast */
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.8;
+            overflow-x: hidden;
+            font-weight: 300;
         }
 
-        header {
-            text-align: center;
-            padding: 40px 0;
-            background-color: #f4f4f9;
-        }
-
-        h1 {
+        h1, h2, p {
             margin: 0;
-            font-size: 2.5em;
-            color: #2C3E50;
+            padding: 0;
         }
 
+        /* Header */
+        header {
+            color: #fff;
+            padding: 30px 30px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        header h1 {
+            font-size: 3.5em;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); 
+            animation: fadeInHeader 1.8s ease-in-out;
+        }
+
+        /* Container Styling */
         .container {
             max-width: 600px;
-            margin: 40px auto;
+            margin: 100px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.212); /* Soft transparent background */
+            border-radius: 15px;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Blur effect */
+            animation: fadeIn 2s ease-out;
             text-align: center;
-            border-radius: 8px;
         }
 
+        /* Form Styling */
         .form-input {
             width: 100%;
             padding: 12px;
             margin: 10px 0;
-            border-radius: 30px;
+            border-radius: 25px;
             border: 1px solid #ccc;
             font-size: 16px;
             box-sizing: border-box;
@@ -49,20 +65,30 @@
         .form-button {
             width: 100%;
             padding: 14px;
-            background-color: #3498DB;
+            margin: 5px;
+            font-family: 'Dancing Script', cursive, sans-serif; /* Elegant cursive font */
+            background: linear-gradient(145deg, #1abc9c, #16a085); /* Elegant gradient buttons */
             color: white;
             border: none;
-            border-radius: 30px;
+            border-radius: 25px;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-button:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
+        .form-button:active {
+            transform: translateY(1px);
+        }
+
+        /* Message Styling */
         .message {
             margin-top: 20px;
             padding: 12px;
@@ -83,31 +109,79 @@
             border: 1px solid #155724;
         }
 
+        /* Link Styling */
         a {
-            text-decoration: none;
-            font-weight: 500;
-            padding: 12px 30px;
-            background-color: #3498DB;
-            color: white;
-            border-radius: 30px;
-            transition: background-color 0.3s, transform 0.2s;
-            margin: 10px;
             display: inline-block;
+            text-decoration: none;
+            padding: 12px 28px;
+            background: linear-gradient(145deg, #1abc9c, #16a085); /* Elegant gradient buttons */
+            color: white;
+            font-size: 1.1em;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin: 10px;
         }
 
         a:hover {
-            background-color: #2980B9;
-            transform: translateY(-2px);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
+        a:active {
+            transform: translateY(1px);
+        }
+
+        /* Footer Styling */
         footer {
             text-align: center;
             padding: 20px;
             font-size: 0.9em;
-            color: #777;
-            background-color: #f4f4f9;
+            color: black;
+            background: linear-gradient(150deg, rgb(143, 174, 195), #4895a1, #78b4c4);
+            margin-top: 100px;
         }
 
+        /* Animations */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInHeader {
+            0% {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Media Queries for Responsiveness */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2.8em;
+            }
+
+            .container {
+                padding: 30px;
+            }
+
+            a {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        } 
     </style>
 </head>
 <body>
@@ -128,8 +202,8 @@
         {% endif %}
 
         <div>
-            <a href="/profile/{{ name }}/" class="back-to-profile">Back to Profile</a>
-            <a href="/view_devices/{{ name }}" class="view-devices">View Devices</a>
+            <a href="/profile/{{ name }}/" >Back to Profile</a>
+            <a href="/view_devices/{{ name }}" >View Devices</a>
         </div>
     </div>
 
