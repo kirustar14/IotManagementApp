@@ -35,7 +35,7 @@ def on_connect(client, userdata, flags, rc):
         print(f"Failed to connect with result code {rc}")
 
 # sending temperature data to server 
-def send_temperature_to_server(temperature, timestamp):
+def send_temperature_to_server(temperature, timestamp, device_id):
     """Send temperature data to the web server via a POST request."""
     global last_post_time
     current_time = time.time()
@@ -46,7 +46,8 @@ def send_temperature_to_server(temperature, timestamp):
         data = {
             "value": temperature,
             "unit": "C",
-            "timestamp": timestamp
+            "timestamp": timestamp,
+            "device_id": device_id
         }
 
         try:
@@ -74,14 +75,14 @@ def on_message(client, userdata, msg):
 
         if msg.topic == TOPIC2:
             temperature = payload.get("temperature", "N/A")
-
+            device_id = payload.get("device_id", "N/A")
             print(f"\n[{current_time}] Sensor Reading:")
             print(f"  - Temperature: {temperature} °C")
             print(f"  - ESP32 Timestamp: {timestamp} ms")
 
             # Send the temperature data to the web server
             if temperature != "N/A":
-                send_temperature_to_server(temperature, timestamp)
+                send_temperature_to_server(temperature, timestamp, device_id)
         
         if msg.topic == TOPIC1: 
             device_id = payload.get("device_id", latest_device_id)

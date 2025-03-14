@@ -105,7 +105,7 @@ async def setup_database(initial_users: dict = None):
         """, 
         "devices": """
             CREATE TABLE IF NOT EXISTS devices (
-                device_id CHAR(36) PRIMARY KEY DEFAULT (UUID()),  -- Use UUID() for device_id
+                device_id CHAR(36) PRIMARY KEY,  -- Use UUID() for device_id
                 user_id INTEGER NOT NULL,
                 device_name VARCHAR(255),
                 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -117,8 +117,8 @@ async def setup_database(initial_users: dict = None):
                 value FLOAT,
                 unit VARCHAR(10),
                 timestamp DATETIME,
-                user_id INT,
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+                device_id CHAR(36),
+                FOREIGN KEY (device_id) REFERENCES devices(device_id) ON DELETE CASCADE
             )
         """
     }

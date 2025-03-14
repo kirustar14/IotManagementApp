@@ -8,13 +8,13 @@ from contextlib import asynccontextmanager
 from typing import Optional
 from mysql.connector import Error
 from fastapi.templating import Jinja2Templates
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 import requests
 import base64
 import httpx
-
+import traceback 
 
 from database import (
     setup_database,
@@ -94,7 +94,6 @@ async def login_page(request: Request):
 
 @app.post("/login")
 async def login(request: Request):
-    global currentUser
     """Validate credentials and create a new session if valid"""
     form_data = await request.form()
     email = form_data.get("email")
@@ -124,7 +123,6 @@ async def login(request: Request):
 
     response = RedirectResponse(url=f"/profile/{name}", status_code=303)
     response.set_cookie(key="sessionId", value=session_id, httponly=True)
-    currentUser = user
     return response
 
 @app.post("/logout")
@@ -593,6 +591,7 @@ class SensorData(BaseModel):
     value: float
     unit: str
     timestamp: str = None
+    device_id: str
 
 # Valid sensor types for checking
 valid_sensor_types = ["temperature"]
@@ -665,13 +664,12 @@ async def get_dashboard(name: str, request: Request):
 
     return templates.TemplateResponse("dashboard.html", {"request": request, "name": name})
 
-
 @app.get("/api/{sensor_type}")
 async def get_sensor_data(sensor_type: str, request: Request,
                     order_by: str = Query(None, alias="order-by"),
                     start_date: str = Query(None, alias="start-date"),
                     end_date: str = Query(None, alias="end-date")):
-
+    
     # Validate the sensor type
     validate_sensor_type(sensor_type)
 
@@ -694,9 +692,16 @@ async def get_sensor_data(sensor_type: str, request: Request,
         return templates.TemplateResponse(
             "error.html", {"request": request, "name": name}
         )
-
-    query = f"SELECT * FROM {sensor_type} WHERE user_id = %s"
-    params = [user_id]
+    
+    # Get all device IDs registered to the user
+    cursor.execute("SELECT device_id FROM devices WHERE user_id = %s", (user_id,))
+    device_ids = [row["device_id"] for row in cursor.fetchall()]
+    
+    if not device_ids:
+        return []  # No devices registered for the user
+    
+    query = f"SELECT * FROM {sensor_type} WHERE device_id IN ({', '.join(['%s'] * len(device_ids))})"
+    params = device_ids
 
     if start_date:
         try:
@@ -736,30 +741,54 @@ async def get_sensor_data(sensor_type: str, request: Request,
 
 
 @app.post("/api/{sensor_type}")
-def insert_sensor_data(sensor_type: str, sensor_data: SensorData, request: Request):
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
+async def insert_sensor_data(sensor_type: str, request: Request):
+    try:
+        # Print raw request data
+        raw_body = await request.body()
+        print("Raw Request Body:", raw_body.decode("utf-8"))  # Decode bytes to string
 
-    # Parse timestamp or use current time
-    if sensor_data.timestamp:
-        timestamp = datetime.strptime(sensor_data.timestamp, "%Y-%m-%d %H:%M:%S")
-    else:
-        timestamp = datetime.now()
+        # Manually parse JSON to check for formatting issues
+        import json
+        try:
+            json_data = json.loads(raw_body)
+            print("Parsed JSON Data:", json_data)
+        except json.JSONDecodeError as e:
+            print("JSON Decode Error:", e)
+            raise HTTPException(status_code=400, detail="Invalid JSON format")
 
-    # Insert data into the database with user_id linked to the logged-in user
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    query = f"""
-        INSERT INTO {sensor_type} (value, unit, timestamp, user_id) 
-        VALUES (%s, %s, %s, %s)
-    """
-    user_id = currentUser["user_id"]
-    cursor.execute(query, (sensor_data.value, sensor_data.unit, timestamp, user_id))
-    connection.commit()
-    cursor.close()
-    connection.close()
+        # Validate the sensor type
+        validate_sensor_type(sensor_type)
 
-    return 
+        # Manually validate with Pydantic
+        try:
+            sensor_data = SensorData(**json_data)
+            print("Validated Sensor Data:", sensor_data.dict())
+        except ValidationError as e:
+            print("Pydantic Validation Error:", e)
+            raise HTTPException(status_code=422, detail=e.errors())
+
+        # Parse timestamp or use current time
+        timestamp = datetime.strptime(sensor_data.timestamp, "%Y-%m-%d %H:%M:%S") if sensor_data.timestamp else datetime.now()
+        device_id = sensor_data.device_id
+
+        # Insert data into the database
+        connection = get_db_connection()
+        cursor = connection.cursor()
+        query = f"""
+            INSERT INTO {sensor_type} (value, unit, timestamp, device_id) 
+            VALUES (%s, %s, %s, %s)
+        """
+
+        cursor.execute(query, (sensor_data.value, sensor_data.unit, timestamp, device_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return {"message": "Sensor data inserted successfully"}
+
+    except Exception as e:
+        print("Error:", e)
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/api/{sensor_type}/{id}")
@@ -921,7 +950,6 @@ async def get_outfit(request: Request):
 async def get_chat_response(request: Request):
     data = await request.json()
     user_prompt = data.get("prompt", "")
-
     # Use the AI API to generate a response
     headers = {
         "email": EMAIL,
@@ -936,6 +964,7 @@ async def get_chat_response(request: Request):
         else:
             raise HTTPException(status_code=response.status_code, detail="AI API request failed")
     except Exception as e:
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Error fetching AI response: {str(e)}")
 
 @app.post("/generate-image")

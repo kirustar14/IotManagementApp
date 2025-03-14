@@ -35,22 +35,29 @@ void publishSensorData() {
     // Read the temperature and pressure from BMP sensor
     float temperatureBMP = bmp.readTemperature(); // Read temperature from BMP sensor
     int pressure = bmp.readPressure(); // Read pressure from BMP sensor
+    String deviceID = getDeviceID();  // Get the unique device ID
 
     // Debugging: Print values to Serial Monitor
     Serial.println("=== Sensor Readings ===");
+    Serial.print("Device ID: "); Serial.println(deviceID);
     Serial.print("Temp: "); Serial.print(temperatureBMP); Serial.println(" C");
     Serial.print("Pressure: "); Serial.print(pressure); Serial.println(" Pa");
     Serial.println("=======================\n");
 
-    // Construct the string in the required format: {"temperature": temp_value, "pressure": pressure_value}
-    String payload = "{";
-    payload += "\"temperature\": " + String(temperatureBMP, 2) + ", ";  // Formatting temperature with 2 decimal places
-    payload += "\"pressure\": " + String(pressure);
-    payload += "}";
+    // Construct the JSON payload
+    StaticJsonDocument<1024> doc;
+    doc["device_id"] = deviceID;
+    doc["temperature"] = temperatureBMP;
+    doc["pressure"] = pressure;
+
+    // Serialize JSON to a string
+    String jsonString;
+    serializeJson(doc, jsonString);
 
     // Publish the message to MQTT topic
-    mqtt.publishMessage("readings", payload);  
+    mqtt.publishMessage("readings", jsonString);  
 }
+
 
 // Function to publish the device ID 
 void publishDeviceID() {
