@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{name}} Dashboard</title>
+
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-decimation"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #3498db;
+            color: white;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: white;
+        }
+        .chart-container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: #3498db;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        .response-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #ai-response {
+            font-size: 1.2rem;
+            margin-top: 20px;
+            color: #555;
+        }
+        #ai-image {
+            display: block;
+            margin: 20px auto;
+            max-width: 300px;
+            border-radius: 10px;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .message-bubble {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 15px;
+            max-width: 70%;
+        }
+        .user-bubble {
+            background-color: #3498db;
+            color: white;
+            margin-left: auto;
+        }
+        .ai-bubble {
+            background-color: #f1f1f1;
+            color: #333;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>{{name}} Dashboard</h1>
+    </header>
+
+    <!-- Temperature Chart -->
+    <div class="chart-container">
+        <canvas id="temperatureChart"></canvas>
+    </div>
+
+    <!-- Buttons -->
+    <div class="button-container">
+        <button onclick="getOutfitSuggestion()">What Should I Wear Today?</button>
+        <button onclick="toggleChat()">Chat!</button>
+        <button id="dashboard-button" class="button" onclick="window.location.href='/profile/{{ name }}'">Profile</button>
+    </div>
+
+    <!-- AI Response Display -->
+    <div class="response-container">
+        <div id="ai-response"></div>
+        <img id="ai-image" src="" alt="" style="display:none;">
+    </div>
+
+    <!-- Chat Feature -->
+    <div id="chat-container" class="chat-container" style="display:none;">
+        <div id="chat-box"></div>
+        <input type="text" id="user-message" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
+    </div>
+
+    <script src="/static/dashboard.js"></script>
+</body>
+</html>

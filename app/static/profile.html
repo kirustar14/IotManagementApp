@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Your Profile</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2C3E50;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 30px;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+        }
+        .button:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        .logout-button {
+            padding: 10px 20px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .logout-button:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #f4f4f9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 id="welcome-message">Welcome!</h1>
+    </header>
+
+    <div class="container">
+        <a id="wardrobe-button" class="button" href="">Go to Wardrobe</a>
+        <a id="register-device-button" class="button" href="">Register a Device</a>
+        <a id="view-devices-button" class="button" href="">View All Devices</a>
+        <a id="dashboard-button" class="button" href="">Dashboard</a>
+        <a id="weather-button" class="button" href="">Weather Forecast</a>
+        <form action="/logout" method="POST" style="margin-top: 20px;">
+            <button class="logout-button" type="submit">Logout</button>
+        </form>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
+    </footer>
+
+    <script>
+        window.onload = function () {
+            const path = window.location.pathname;
+            const username = path.split('/profile/')[1];
+
+            document.getElementById("welcome-message").textContent = `Welcome, ${decodeURIComponent(username)}!`;
+            document.getElementById("wardrobe-button").href = `/wardrobe/${username}`;
+            document.getElementById("register-device-button").href = `/register_device/${username}`;
+            document.getElementById("view-devices-button").href = `/view_devices/${username}`;
+            document.getElementById("dashboard-button").href = `/dashboard/${username}`;
+            document.getElementById("weather-button").href = `/weather/${username}`;
+        };
+    </script>
+</body>
+</html> 

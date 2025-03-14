@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Device Registration</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2C3E50;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 30px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .form-button:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+
+        .message {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            text-align: center;
+        }
+
+        .error {
+            background-color: #ffcccc;
+            color: #d8000c;
+            border: 1px solid #d8000c;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #155724;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        a:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #f4f4f9;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Register Device</h1>
+    </header>
+
+    <div class="container">
+        <form method="post">
+            <input type="text" name="device_name" class="form-input" placeholder="Enter device name" required>
+            <button type="submit" class="form-button">Register Device</button>
+        </form>
+
+        {% if message %}
+            <div class="message {% if 'Error' in message %}error{% else %}success{% endif %}">
+                <p>{{ message }}</p>
+            </div>
+        {% endif %}
+
+        <div>
+            <a href="/profile/{{ name }}/" class="back-to-profile">Back to Profile</a>
+            <a href="/view_devices/{{ name }}" class="view-devices">View Devices</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
+    </footer>
+
+</body>
+</html>

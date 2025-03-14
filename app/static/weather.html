@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2C3E50;
+        }
+        section {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .description {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        .info {
+            font-size: 1.2em;
+            color: #777;
+            margin-top: 20px;
+        }
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        label {
+            font-size: 1.1em;
+            margin-right: 10px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-right: 10px;
+        }
+        input[type="submit"] {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        input[type="submit"]:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #f4f4f9;
+        }
+        .profile-button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            background-color: #2ecc71;
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s, transform 0.2s;
+            margin-top: 20px;
+        }
+        .profile-button:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Check the Weather</h1>
+    </header>
+
+    <section>
+        <div class="description">
+            <p>Enter the name of a city to get the current weather conditions and personalized clothing suggestions based on the weather.</p>
+        </div>
+
+        <!-- Weather Form -->
+        <form id="weather-form">
+            <label for="city">Enter City Name:</label>
+            <input type="text" id="city" required>
+            <input type="submit" value="Get Weather">
+        </form>
+
+        <span class="info"></span>
+        <button class="profile-button" onclick="window.location.href='http://localhost:8000/profile/{{name}}'">Go to Profile</button>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Weather App by Kiruthika Marikumaran</p>
+    </footer>
+
+    <script src="/static/weather.js"></script>
+</body>
+</html>

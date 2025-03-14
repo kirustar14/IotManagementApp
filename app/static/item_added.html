@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Added - IoT Wardrobe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #f4f4f9;
+            padding: 40px 0;
+        }
+        h1 {
+            font-size: 2em;
+            color: #2C3E50;
+        }
+        section {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        p {
+            font-size: 1.2em;
+            color: #555;
+        }
+        a {
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        a:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #f4f4f9;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>IoT Wardrobe Management</h1>
+    </header>
+    <section>
+        <h2>Item Added Successfully!</h2>
+        <p>Your item has been successfully added to your wardrobe.</p>
+        <a href="/wardrobe/{{ name }}">Back to Wardrobe</a>
+    </section>
+    <footer>
+        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Item - IoT Wardrobe</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        header {
+            text-align: center;
+            padding: 30px 0;
+            background-color: #f4f4f9;
+            width: 100%;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2em;
+            color: #2C3E50;
+        }
+        form {
+            background-color: #f4f4f9;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            margin: 20px;
+        }
+        label {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #555;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+        button[type="submit"] {
+            padding: 12px 30px;
+            background-color: #3498DB;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            width: 100%;
+        }
+        button[type="submit"]:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        .links {
+            margin-top: 15px;
+        }
+        .links a {
+            text-decoration: none;
+            font-size: 1em;
+            font-weight: 500;
+            padding: 10px 20px;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+            display: inline-block;
+            margin: 5px;
+        }
+        .links a:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>IoT Wardrobe Management</h1>
+    </header>
+    <form action="/wardrobe/add/{{ name }}" method="POST">
+        <h2>Add a New Item</h2>
+        <label for="item_name">Item Name:</label>
+        <input type="text" id="item_name" name="item_name" required>
+
+        <label for="item_description">Item Description:</label>
+        <textarea id="item_description" name="item_description" required></textarea>
+
+        <button type="submit">Add Item</button>
+    </form>
+    <div class="links">
+        <a href="/wardrobe/{{ name }}">Back to Wardrobe</a>
+        <a href="/profile/{{ name }}">Back to Profile</a>
+    </div>
+</body>
+</html>

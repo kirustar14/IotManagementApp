@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Devices</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fff;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2C3E50;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .description {
+            font-size: 1.3em;
+            margin-bottom: 30px;
+            color: #555;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        button {
+            padding: 8px 12px;
+            font-size: 14px;
+            color: #fff;
+            background-color: #e74c3c;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+        }
+        .back-link a {
+            text-decoration: none;
+            font-weight: 500;
+            padding: 12px 30px;
+            background-color: #3498DB;
+            color: white;
+            border-radius: 30px;
+            transition: background-color 0.3s, transform 0.2s;
+            margin: 10px;
+            display: inline-block;
+        }
+        .back-link a:hover {
+            background-color: #2980B9;
+            transform: translateY(-2px);
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            color: #777;
+            background-color: #f4f4f9;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Registered Devices - {{ name }} </h1>
+    </header>
+    
+    <div class="container">
+        <div class="description">
+            {% if devices %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Device ID</th>
+                            <th>Device Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for device in devices %}
+                        <tr>
+                            <td>{{ device.device_id }}</td>
+                            <td>{{ device.device_name }}</td>
+                            <td>
+                                <form method="POST" action="/delete_device/{{ name }}/{{ device.device_id }}">
+                                    <button type="submit">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No devices registered.</p>
+            {% endif %}
+        </div>
+
+        <div class="back-link">
+            <a href="/register_device/{{ name }}">Register a New Device</a>
+            <a href="/profile/{{ name }}">Back to Profile</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 IoT Wardrobe App by Kiruthika Marikumaran</p>
+    </footer>
+</body>
+</html>
