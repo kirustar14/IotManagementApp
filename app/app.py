@@ -203,24 +203,6 @@ async def signup(request: Request):
         if connection and connection.is_connected():
             connection.close()
 
-# Route to get all users
-@app.get("/users", response_class=JSONResponse)
-async def get_users():
-    """Return details of all users"""
-    users = await get_all_users()
-    if not users:
-        raise HTTPException(status_code=404, detail="No users found")
-    return users
-
-# Route to get all sessions
-@app.get("/sessions", response_class=JSONResponse)
-async def get_sessions():
-    """Return details of all sessions"""
-    sessions = await get_all_sessions()
-    if not sessions:
-        raise HTTPException(status_code=404, detail="No sessions found")
-    return sessions
-
 
 # Wardrobe functionality
 
