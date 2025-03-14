@@ -740,16 +740,9 @@ async def get_sensor_data(sensor_type: str, request: Request,
     return result
 
 @app.post("/api/{sensor_type}")
-async def insert_sensor_data(sensor_type: str, data: SensorData):
+async def insert_sensor_data(sensor_type: str, sensor_data: SensorData):
         # Validate the sensor type
         validate_sensor_type(sensor_type)
-
-        # Manually validate with Pydantic
-        try:
-            sensor_data = SensorData(data)
-        except ValidationError as e:
-            print("Pydantic Validation Error:", e)
-            raise HTTPException(status_code=422, detail=e.errors())
 
         # Parse timestamp or use current time
         timestamp = datetime.strptime(sensor_data.timestamp, "%Y-%m-%d %H:%M:%S") if sensor_data.timestamp else datetime.now()
