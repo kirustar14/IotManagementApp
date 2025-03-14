@@ -10,7 +10,7 @@ import os
 latest_device_id = None
 
 # MQTT Broker settings
-BROKER = "broker.hivemq.com"
+BROKER = "broker.emqx.io"
 PORT = 1883
 BASE_TOPIC = "abc/ece140/devices"
 TOPIC1 = BASE_TOPIC + "/device_registration"
