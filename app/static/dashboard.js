@@ -17,7 +17,7 @@ window.onload = async function () {
 
 // Fetch data from the API
 async function fetchData(sensorType) {
-    const response = await fetch(`https://iotmanagementapp.onrender.com/api/${sensorType}`);
+    const response = await fetch(`https://iotmanagementapp.onrender.com/api/temperature`);
     const data = await response.json();
     
     if (sensorType === 'temperature') {
