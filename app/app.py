@@ -862,14 +862,7 @@ async def get_outfit(request: Request):
     item_names = [item["item_name"] for item in wardrobe]
 
     # Step 5: Fetch the latest temperature data
-    async with httpx.AsyncClient() as client:
-        temp_response = await client.get(f"http://localhost:8000/api/latest/temperature", cookies={"sessionId": session_id})
-
-    if temp_response.status_code == 200:
-        temp_data = temp_response.json()
-        temperature = temp_data.get("value")  # Assuming the temp data has a "value" field
-    else:
-        temperature = None
+    temperature = 22
 
     location = user_from_session["location"]
 
