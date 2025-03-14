@@ -14,10 +14,10 @@ BROKER = "broker.emqx.io"
 PORT = 1883
 BASE_TOPIC = "abc/ece140/devices"
 TOPIC1 = BASE_TOPIC + "/device_registration"
-API_URL1 = "http://localhost:8000/api/register_device1"
+API_URL1 = "https://iotmanagementapp.onrender.com/api/register_device1"
 
 TOPIC2 = BASE_TOPIC + "/readings"
-WEB_SERVER_URL = "http://localhost:8000/api/temperature"
+WEB_SERVER_URL = "https://iotmanagementapp.onrender.com/api/temperature"
 # To track the last time we sent a POST request
 last_post_time = 0
 
