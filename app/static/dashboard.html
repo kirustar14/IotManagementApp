@@ -195,7 +195,6 @@
         <p>Sensor Data</p>
         <select onchange="switchTab(this.value)">
             <option value="chat">Chat</option>
-            <option value="outfit">Outfit Recommendations</option>
             <option value="image">Image Generation</option>
         </select>
     </div>
@@ -212,13 +211,6 @@
                 <div class="chat-container">
                     <div id="chat-box"></div>
                     <input type="text" id="user-message" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
-                </div>
-            </div>
-
-            <div id="outfit" class="tab-content">
-                <div class="response-container">
-                    <div id="ai-response">What should I wear today?</div>
-                    <button onclick="getOutfitSuggestion()">Get Outfit Suggestion</button>
                 </div>
             </div>
 

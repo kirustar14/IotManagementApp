@@ -760,77 +760,6 @@ async def insert_sensor_data(sensor_type: str, sensor_data: SensorData):
 
         return {"message": "Sensor data inserted successfully"}
 
-
-# get latest temperature reading 
-@app.get("/api/latest/{sensor_type}")
-async def get_sensor_data(sensor_type: str, request: Request,
-                          order_by: str = Query(None, alias="order-by"),
-                          start_date: str = Query(None, alias="start-date"),
-                          end_date: str = Query(None, alias="end-date")):
-
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    
-    session_id = request.cookies.get("sessionId")
-    if not session_id:
-        return RedirectResponse(url="/login")
-    
-    session = await get_session(session_id)
-    if not session:
-        return RedirectResponse(url="/login")
-
-    user_id = session["user_id"]
-    user_from_session = await get_user_by_id(user_id)
-    if not user_from_session:
-        return HTMLResponse(content="User not found", status_code=404)
-    
-    query = f"SELECT * FROM {sensor_type} WHERE device_id = %s"
-    params = [user_id]
-
-    # Fetch only the latest temperature if the sensor type is "temperature"
-    if sensor_type == "temperature":
-        query += " ORDER BY timestamp DESC LIMIT 1"
-
-    elif start_date:
-        try:
-            if len(start_date.strip()) == 10:
-                start_date += " 00:00:00"
-            dt_start = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
-            query += " AND `timestamp` >= %s"
-            params.append(dt_start)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid start date format")
-
-    if end_date:
-        try:
-            if len(end_date.strip()) == 10:
-                end_date += " 23:59:59"
-            dt_end = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
-            query += " AND `timestamp` <= %s"
-            params.append(dt_end)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid end date format")
-
-    if order_by and sensor_type != "temperature":
-        query += f" ORDER BY {order_by}"
-
-    cursor.execute(query, params)
-    result = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-
-    # Convert datetime values to string format
-    for row in result:
-        if row.get("timestamp") and isinstance(row["timestamp"], datetime):
-            row["timestamp"] = row["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
-
-    return result[0] if sensor_type == "temperature" and result else result
-
-
 # API Details
 EMAIL = "kmarikumaran@ucsd.edu"
 PID = "A17877875"
@@ -838,7 +767,7 @@ AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/comp
 IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/image"
 
 @app.post("/get-outfit")
-async def get_outfit(request: Request):
+async def get_outfit(request: Request, temperature: float):
 
     session_id = request.cookies.get("sessionId")
     if not session_id:
@@ -860,11 +789,6 @@ async def get_outfit(request: Request):
     # Step 4: Fetch wardrobe items for the user
     wardrobe = await get_wardrobe_items(user_id)
     item_names = [item["item_name"] for item in wardrobe]
-
-    # Step 5: Fetch the latest temperature data
-    temperature = 22
-
-    location = user_from_session["location"]
 
     # Step 6: Create a prompt for AI based on available data
     if temperature is not None:

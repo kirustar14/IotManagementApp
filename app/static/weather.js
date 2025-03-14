@@ -59,12 +59,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // Handle "What Should I Wear" button click
-async function getOutfitSuggestion() {
+async function getOutfitSuggestion(temperature) {
     try {
         document.getElementById("ai-response").innerText = "Fetching outfit recommendation...";
         const response = await fetch("http://localhost:8000/get-outfit", { 
             method: "POST",
-            headers: { "Content-Type": "application/json" }
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ temperature: temperature })
         });
 
         const data = await response.json();
@@ -73,4 +74,4 @@ async function getOutfitSuggestion() {
         console.error("Error fetching AI response:", error);
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
-}
+} 
