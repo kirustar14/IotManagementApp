@@ -739,31 +739,14 @@ async def get_sensor_data(sensor_type: str, request: Request,
 
     return result
 
-
 @app.post("/api/{sensor_type}")
-async def insert_sensor_data(sensor_type: str, request: Request):
-    try:
-        # Print raw request data
-        raw_body = await request.body()
-        print("Raw Request Body:", raw_body.decode("utf-8"))  # Decode bytes to string
-
-        # Manually parse JSON to check for formatting issues
-        import json
-        try:
-            print(json_data)
-            json_data = json.loads(raw_body)
-            print("Parsed JSON Data:", json_data)
-        except json.JSONDecodeError as e:
-            print("JSON Decode Error:", e)
-            raise HTTPException(status_code=400, detail="Invalid JSON format")
-
+async def insert_sensor_data(sensor_type: str, data: SensorData):
         # Validate the sensor type
         validate_sensor_type(sensor_type)
 
         # Manually validate with Pydantic
         try:
-            sensor_data = SensorData(**json_data)
-            print("Validated Sensor Data:", sensor_data.dict())
+            sensor_data = SensorData(data)
         except ValidationError as e:
             print("Pydantic Validation Error:", e)
             raise HTTPException(status_code=422, detail=e.errors())
@@ -786,10 +769,6 @@ async def insert_sensor_data(sensor_type: str, request: Request):
         connection.close()
 
         return {"message": "Sensor data inserted successfully"}
-
-    except Exception as e:
-        print("Error:", e)
-        raise HTTPException(status_code=400, detail=str(e))
 
 
 @app.get("/api/{sensor_type}/{id}")

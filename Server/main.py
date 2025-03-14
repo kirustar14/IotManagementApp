@@ -51,11 +51,12 @@ def send_temperature_to_server(temperature, timestamp, device_id):
         }
 
         try:
-            print(data)
             response = requests.post(WEB_SERVER_URL, json=data) 
             if response.status_code == 200:
                 print(f"Temperature data sent successfully: {data}")
             else:
+                print("Data failed:")
+                print(data)
                 print(f"Failed to send data. Status code: {response.status_code}")
         except requests.RequestException as e:
             print(f"Error sending data to server: {e}") 
@@ -76,13 +77,9 @@ def on_message(client, userdata, msg):
         if msg.topic == TOPIC2:
             temperature = payload.get("temperature", "N/A")
             device_id = payload.get("device_id", "N/A")
-            print(f"\n[{current_time}] Sensor Reading:")
-            print(f"  - Temperature: {temperature} °C")
-            print(f"  - ESP32 Timestamp: {timestamp} ms")
-
             # Send the temperature data to the web server
             if temperature != "N/A":
-                send_temperature_to_server(temperature, timestamp, device_id)
+                send_temperature_to_server(temperature, timestamp, device_id) 
         
         if msg.topic == TOPIC1: 
             device_id = payload.get("device_id", latest_device_id)
