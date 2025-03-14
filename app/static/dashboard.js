@@ -17,7 +17,7 @@ window.onload = async function () {
 
 // Fetch data from the API
 async function fetchData(sensorType) {
-    const response = await fetch(`http://localhost:8000/api/${sensorType}`);
+    const response = await fetch(`http://iotmanagementapp.onrender.com/api/${sensorType}`);
     const data = await response.json();
     
     if (sensorType === 'temperature') {
@@ -112,7 +112,7 @@ async function sendMessage() {
     document.getElementById("user-message").value = "";
 
     try {
-        const response = await fetch("http://localhost:8000/get-chat-response", { 
+        const response = await fetch("http://iotmanagementapp.onrender.com/get-chat-response", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt: userMessage })
@@ -148,7 +148,7 @@ async function generateImage() {
         document.getElementById("ai-response").innerText = "Generating image...";
         document.getElementById("ai-image").style.display = "none";
 
-        const response = await fetch("http://localhost:8000/generate-image", {
+        const response = await fetch("http://iotmanagementapp.onrender.com/generate-image", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ prompt })

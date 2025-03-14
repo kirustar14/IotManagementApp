@@ -761,25 +761,6 @@ async def insert_sensor_data(sensor_type: str, sensor_data: SensorData):
         return {"message": "Sensor data inserted successfully"}
 
 
-@app.get("/api/{sensor_type}/{id}")
-def get_sensor_entry(sensor_type: str, id: int, request: Request):
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-    
-    cursor.execute(f"SELECT * FROM {sensor_type} WHERE id = %s", (id,))
-    result = cursor.fetchone()
-    
-    cursor.close()
-    connection.close()
-    
-    if not result:
-        raise HTTPException(status_code=404)
-    return result
-
-
 # get latest temperature reading 
 @app.get("/api/latest/{sensor_type}")
 async def get_sensor_data(sensor_type: str, request: Request,
@@ -806,7 +787,7 @@ async def get_sensor_data(sensor_type: str, request: Request,
     if not user_from_session:
         return HTMLResponse(content="User not found", status_code=404)
     
-    query = f"SELECT * FROM {sensor_type} WHERE user_id = %s"
+    query = f"SELECT * FROM {sensor_type} WHERE device_id = %s"
     params = [user_id]
 
     # Fetch only the latest temperature if the sensor type is "temperature"
