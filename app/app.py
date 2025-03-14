@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 import requests
-import urllib.parse
+import base64
 import httpx
 
 
@@ -48,7 +48,6 @@ def get_user_id_from_session(request: Request):
         raise HTTPException(status_code=401, detail="Invalid session")
     return session["user_id"]
 
-# TODO: 1. create your own user
 INIT_USERS = {}
 
 @asynccontextmanager
@@ -95,6 +94,7 @@ async def login_page(request: Request):
 
 @app.post("/login")
 async def login(request: Request):
+    global currentUser
     """Validate credentials and create a new session if valid"""
     form_data = await request.form()
     email = form_data.get("email")
@@ -124,6 +124,7 @@ async def login(request: Request):
 
     response = RedirectResponse(url=f"/profile/{name}", status_code=303)
     response.set_cookie(key="sessionId", value=session_id, httponly=True)
+    currentUser = user
     return response
 
 @app.post("/logout")
@@ -228,7 +229,7 @@ async def get_sessions():
 # Route to display the user's wardrobe
 @app.get("/wardrobe/{name}", response_class=HTMLResponse)
 async def display_wardrobe(name: str, request: Request):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -256,7 +257,7 @@ async def display_wardrobe(name: str, request: Request):
 # Route to show the add item form
 @app.get("/wardrobe/add/{name}", response_class=HTMLResponse)
 async def add_item_form(name: str, request: Request):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -278,7 +279,7 @@ async def add_item_form(name: str, request: Request):
 
 @app.post("/wardrobe/add/{name}", response_class=HTMLResponse)
 async def add_item(request: Request, name: str, item_name: str = Form(...), item_description: str = Form(...)):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -307,7 +308,7 @@ async def add_item(request: Request, name: str, item_name: str = Form(...), item
 # Route to handle editing an item in the wardrobe
 @app.get("/wardrobe/edit/{name}/{item_id}", response_class=HTMLResponse)
 async def edit_item_form(name: str, item_id: int, request: Request):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -342,7 +343,7 @@ async def edit_item_form(name: str, item_id: int, request: Request):
 # Route to handle updating an item in the wardrobe
 @app.post("/wardrobe/edit/{name}/{item_id}", response_class=HTMLResponse)
 async def update_item(request: Request, name: str, item_id: int, item_name: str = Form(...), item_description: str = Form(...)):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -369,7 +370,7 @@ async def update_item(request: Request, name: str, item_id: int, item_name: str 
 # Route to handle deleting an item from the wardrobe
 @app.post("/wardrobe/delete/{name}/{item_id}", response_class=HTMLResponse)
 async def delete_item(request: Request, name: str, item_id: int):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -415,7 +416,7 @@ class DeviceRegistration(BaseModel):
 
 @app.get("/register_device/{name}", response_class=HTMLResponse)
 async def register_device_form(request: Request, name: str):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -441,8 +442,6 @@ async def register_device_form(request: Request, name: str):
 async def register_device(
     request: Request, name: str, device: DeviceRegistration = Depends(DeviceRegistration.as_form)
 ):
-    """Handle the device registration sent from the form"""
-    """Show user profile if authenticated, error if not"""
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -495,8 +494,7 @@ async def register_device(
 
 @app.get("/view_devices/{name}", response_class=HTMLResponse)
 async def view_devices(request: Request, name: str):
-    """View all devices associated with the given name"""
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -526,9 +524,7 @@ async def view_devices(request: Request, name: str):
 
 @app.post("/delete_device/{name}/{device_id}")
 async def delete_device(request: Request, name: str, device_id: str):
-    """Delete the device associated with the given name and device ID"""
-    # Fetch user ID from the name
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -599,7 +595,7 @@ class SensorData(BaseModel):
     timestamp: str = None
 
 # Valid sensor types for checking
-valid_sensor_types = ["temperature", "humidity", "light"]
+valid_sensor_types = ["temperature"]
 
 # Function to validate sensor type
 def validate_sensor_type(sensor_type: str):
@@ -669,84 +665,35 @@ async def get_dashboard(name: str, request: Request):
 
     return templates.TemplateResponse("dashboard.html", {"request": request, "name": name})
 
-"""
-@app.get("/api/{sensor_type}")
-def get_sensor_data(sensor_type: str, 
-    order_by: str = Query(None, alias="order-by"), 
-    start_date: str = Query(None, alias="start-date"), 
-    end_date: str = Query(None, alias="end-date")):
 
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
-
-    connection = get_db_connection()
-    cursor = connection.cursor(dictionary=True)
-
-    query = f"SELECT * FROM {sensor_type} WHERE 1=1"
-    params = []
-
-    if start_date:
-        try:
-            #If only the date is provided (length 10), append time "00:00:00"
-            if len(start_date.strip()) == 10:
-                start_date += " 00:00:00"
-            dt_start = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
-            query += " AND `timestamp` >= %s"
-            params.append(dt_start)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid start date format")
-
-    if end_date:
-        try:
-            #Optionally, if you want to assume end-of-day when only a date is provided:
-            if len(end_date.strip()) == 10:
-                end_date += " 23:59:59"
-            dt_end = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
-            query += " AND `timestamp` <= %s"
-            params.append(dt_end)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid end date format")
-
-    if order_by:
-        query += f" ORDER BY {order_by}" 
-    
-    cursor.execute(query, params)
-    result = cursor.fetchall()
-
-    cursor.close()
-    connection.close()
-    
-    # Convert datetime values to string format.
-    for row in result:
-        if row.get("timestamp") and isinstance(row["timestamp"], datetime):
-            row["timestamp"] = row["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
-    
-    return result
-"""
 @app.get("/api/{sensor_type}")
 async def get_sensor_data(sensor_type: str, request: Request,
                     order_by: str = Query(None, alias="order-by"),
                     start_date: str = Query(None, alias="start-date"),
                     end_date: str = Query(None, alias="end-date")):
 
-    # Get session and validate user
-    session_id = request.cookies.get("sessionId")
-    if not session_id:
-        raise HTTPException(status_code=401, detail="User not logged in")
-    
-    session = await get_session(session_id)
-    if not session:
-        raise HTTPException(status_code=401, detail="User not authenticated")
-
-    user_id = session["user_id"]
-    if not user_id:
-        raise HTTPException(status_code=400, detail="User ID not found")
-
     # Validate the sensor type
     validate_sensor_type(sensor_type)
 
     connection = get_db_connection()
     cursor = connection.cursor(dictionary=True)
+    
+    session_id = request.cookies.get("sessionId")
+    if not session_id:
+        return RedirectResponse(url="/login")
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/login")
+
+    user_id = session["user_id"]
+    user_from_session = await get_user_by_id(user_id)
+    if not user_from_session:
+        return HTMLResponse(content="User not found", status_code=404)
+    name = user_from_session["name"]
+    if user_from_session["name"] != name:
+        return templates.TemplateResponse(
+            "error.html", {"request": request, "name": name}
+        )
 
     query = f"SELECT * FROM {sensor_type} WHERE user_id = %s"
     params = [user_id]
@@ -787,49 +734,9 @@ async def get_sensor_data(sensor_type: str, request: Request,
 
     return result
 
-"""
-@app.post("/api/{sensor_type}")
-def insert_sensor_data(sensor_type: str, sensor_data: SensorData):
-
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
-
-    # Parse timestamp or use current time
-    if sensor_data.timestamp:
-        timestamp = datetime.strptime(sensor_data.timestamp, "%Y-%m-%d %H:%M:%S")
-    else:
-        timestamp = datetime.now()
-
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    query = f"INSERT INTO {sensor_type} (value, unit, timestamp) VALUES (%s, %s, %s)"
-    cursor.execute(query, (sensor_data.value, sensor_data.unit, timestamp))
-    connection.commit()
-
-    inserted_id = cursor.lastrowid
-    cursor.close()
-    connection.close()
-    
-    return {"id": inserted_id}
-
-"""
 
 @app.post("/api/{sensor_type}")
 def insert_sensor_data(sensor_type: str, sensor_data: SensorData, request: Request):
-
-    # Get session and validate user
-    session_id = request.cookies.get("sessionId")
-    if not session_id:
-        raise HTTPException(status_code=401, detail="User not logged in")
-    
-    session = get_session(session_id)  # Assuming get_session is an async function
-    if not session:
-        raise HTTPException(status_code=401, detail="User not authenticated")
-
-    user_id = session["user_id"]  # Assuming user_id is saved in session
-    if not user_id:
-        raise HTTPException(status_code=400, detail="User ID not found")
-
     # Validate the sensor type
     validate_sensor_type(sensor_type)
 
@@ -846,38 +753,17 @@ def insert_sensor_data(sensor_type: str, sensor_data: SensorData, request: Reque
         INSERT INTO {sensor_type} (value, unit, timestamp, user_id) 
         VALUES (%s, %s, %s, %s)
     """
+    user_id = currentUser["user_id"]
     cursor.execute(query, (sensor_data.value, sensor_data.unit, timestamp, user_id))
     connection.commit()
-
-    inserted_id = cursor.lastrowid
     cursor.close()
     connection.close()
 
-    return {"id": inserted_id}
-
-
-
-@app.get("/api/{sensor_type}/count")
-def get_sensor_count(sensor_type: str):
-
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
-
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    cursor.execute(f"SELECT COUNT(*) FROM {sensor_type}")
-    row = cursor.fetchone()  
-    cursor.close()
-    connection.close()
-
-    count = row[0] if isinstance(row, (list, tuple)) else row
-    return count
+    return 
 
 
 @app.get("/api/{sensor_type}/{id}")
-def get_sensor_entry(sensor_type: str, id: int):
-
+def get_sensor_entry(sensor_type: str, id: int, request: Request):
     # Validate the sensor type
     validate_sensor_type(sensor_type)
 
@@ -894,70 +780,86 @@ def get_sensor_entry(sensor_type: str, id: int):
         raise HTTPException(status_code=404)
     return result
 
-@app.put("/api/{sensor_type}/{id}")
-def update_sensor_entry(sensor_type: str, id: int, sensor_data: SensorData):
+
+# get latest temperature reading 
+@app.get("/api/latest/{sensor_type}")
+async def get_sensor_data(sensor_type: str, request: Request,
+                          order_by: str = Query(None, alias="order-by"),
+                          start_date: str = Query(None, alias="start-date"),
+                          end_date: str = Query(None, alias="end-date")):
 
     # Validate the sensor type
     validate_sensor_type(sensor_type)
 
     connection = get_db_connection()
-    cursor = connection.cursor()
+    cursor = connection.cursor(dictionary=True)
+    
+    session_id = request.cookies.get("sessionId")
+    if not session_id:
+        return RedirectResponse(url="/login")
+    
+    session = await get_session(session_id)
+    if not session:
+        return RedirectResponse(url="/login")
 
-    updates = []
-    params = []
+    user_id = session["user_id"]
+    user_from_session = await get_user_by_id(user_id)
+    if not user_from_session:
+        return HTMLResponse(content="User not found", status_code=404)
+    
+    query = f"SELECT * FROM {sensor_type} WHERE user_id = %s"
+    params = [user_id]
 
-    if sensor_data.value is not None:
-        updates.append("value = %s")
-        params.append(sensor_data.value)
+    # Fetch only the latest temperature if the sensor type is "temperature"
+    if sensor_type == "temperature":
+        query += " ORDER BY timestamp DESC LIMIT 1"
 
-    if sensor_data.unit is not None:
-        updates.append("unit = %s")
-        params.append(sensor_data.unit)
+    elif start_date:
+        try:
+            if len(start_date.strip()) == 10:
+                start_date += " 00:00:00"
+            dt_start = datetime.strptime(start_date, "%Y-%m-%d %H:%M:%S")
+            query += " AND `timestamp` >= %s"
+            params.append(dt_start)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid start date format")
 
-    if sensor_data.timestamp is not None:
-        updates.append("timestamp = %s")
-        params.append(sensor_data.timestamp)
+    if end_date:
+        try:
+            if len(end_date.strip()) == 10:
+                end_date += " 23:59:59"
+            dt_end = datetime.strptime(end_date, "%Y-%m-%d %H:%M:%S")
+            query += " AND `timestamp` <= %s"
+            params.append(dt_end)
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid end date format")
 
-    if not updates:
-        raise HTTPException(status_code=400, detail="No data to update")
-
-    query = f"UPDATE {sensor_type} SET {', '.join(updates)} WHERE id = %s"
-    params.append(id)
+    if order_by and sensor_type != "temperature":
+        query += f" ORDER BY {order_by}"
 
     cursor.execute(query, params)
-    connection.commit()
+    result = cursor.fetchall()
 
     cursor.close()
     connection.close()
-    
-    return {"message": "Entry updated"}
 
-@app.delete("/api/{sensor_type}/{id}")
-def delete_sensor_entry(sensor_type: str, id: int):
+    # Convert datetime values to string format
+    for row in result:
+        if row.get("timestamp") and isinstance(row["timestamp"], datetime):
+            row["timestamp"] = row["timestamp"].strftime("%Y-%m-%d %H:%M:%S")
 
-    # Validate the sensor type
-    validate_sensor_type(sensor_type)
+    return result[0] if sensor_type == "temperature" and result else result
 
-    connection = get_db_connection()
-    cursor = connection.cursor()
-    
-    cursor.execute(f"DELETE FROM {sensor_type} WHERE id = %s", (id,))
-    connection.commit()
-    
-    cursor.close()
-    connection.close()
-    
-    return {"message": "Entry deleted"}
 
 # API Details
 EMAIL = "kmarikumaran@ucsd.edu"
 PID = "A17877875"
 AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/complete"
-
+IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/image"
 
 @app.post("/get-outfit")
 async def get_outfit(request: Request):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -975,14 +877,27 @@ async def get_outfit(request: Request):
     if user_from_session["name"] != name:
         return templates.TemplateResponse("error.html", {"request": request, "name": name})
 
-    # Get the user's location (city)
-    location = user_from_session.get("location")   
     # Step 4: Fetch wardrobe items for the user
     wardrobe = await get_wardrobe_items(user_id)
     item_names = [item["item_name"] for item in wardrobe]
 
-    # Step 5: Create a prompt for AI to generate outfit recommendations
-    prompt = f"Based on where I am located: {location} and the wardrobe items: {', '.join(item_names)}, what should I wear today?"
+    # Step 5: Fetch the latest temperature data
+    async with httpx.AsyncClient() as client:
+        temp_response = await client.get(f"http://localhost:8000/api/latest/temperature", cookies={"sessionId": session_id})
+
+    if temp_response.status_code == 200:
+        temp_data = temp_response.json()
+        temperature = temp_data.get("value")  # Assuming the temp data has a "value" field
+    else:
+        temperature = None
+
+    location = user_from_session["location"]
+
+    # Step 6: Create a prompt for AI based on available data
+    if temperature is not None:
+        prompt = f"Based on the current temperature of {temperature}°C and the wardrobe items: {', '.join(item_names)}, what should I wear today?"
+    else:
+        prompt = f"Based on the wardrobe items: {', '.join(item_names)}, what should I wear today? If I don't have anything, just suggest something for different weather options."
 
     headers = {
         "email": EMAIL,
@@ -1000,7 +915,7 @@ async def get_outfit(request: Request):
             raise HTTPException(status_code=ai_response.status_code, detail="AI API request failed")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching AI response: {str(e)}")
-    
+
 
 @app.post("/get-chat-response")
 async def get_chat_response(request: Request):
@@ -1023,11 +938,32 @@ async def get_chat_response(request: Request):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching AI response: {str(e)}")
 
+@app.post("/generate-image")
+async def generate_image(request: Request):
+    data = await request.json()
+    prompt = data.get("prompt", "")
+    
+    headers = {"email": EMAIL, "pid": PID, "Content-Type": "application/json"}
+    payload = {"prompt": prompt, "width": 512, "height": 512}
+    print(headers)
+    print(payload)
+    try:
+        response = requests.post(IMAGE_API_URL, headers=headers, json=payload)
+        if response.status_code == 200:         
+            image_data = response.content
+            base64_image = base64.b64encode(image_data).decode("utf-8")
+            return JSONResponse(content={"image_base64": f"data:image/png;base64,{base64_image}"})
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Image generation API request failed")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error generating image: {str(e)}")
+    
+
 # Weather page 
 
 @app.get("/weather/{name}")
 async def page(request: Request):
-    """Show user profile if authenticated, error if not"""
+
     session_id = request.cookies.get("sessionId")
     if not session_id:
         return RedirectResponse(url="/login")
@@ -1041,6 +977,7 @@ async def page(request: Request):
     if not user_from_session:
         return HTMLResponse(content="User not found", status_code=404)
     name = user_from_session["name"]
+
     if user_from_session["name"] != name:
         return templates.TemplateResponse(
             "error.html", {"request": request, "name": name}

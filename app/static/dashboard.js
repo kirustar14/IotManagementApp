@@ -144,3 +144,40 @@ function addMessage(message, sender) {
     chatBox.appendChild(messageBubble);
     chatBox.scrollTop = chatBox.scrollHeight; // Auto-scroll to the latest message
 }
+
+async function generateImage() {
+    const prompt = document.getElementById("image-prompt").value.trim();
+    if (!prompt) {
+        alert("Please enter a description for the image.");
+        return;
+    }
+
+    try {
+        document.getElementById("ai-response").innerText = "Generating image...";
+        document.getElementById("ai-image").style.display = "none";
+
+        const response = await fetch("http://localhost:8000/generate-image", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        if (data.image_url) {
+            document.getElementById("ai-image").src = data.image_url;
+        } else if (data.image_base64) {
+            document.getElementById("ai-image").src = data.image_base64;
+        } else {
+            document.getElementById("ai-response").innerText = "Failed to generate image.";
+            return;
+        }
+
+        document.getElementById("ai-image").style.display = "block";
+        document.getElementById("ai-response").innerText = "";
+
+    } catch (error) {
+        console.error("Error generating image:", error);
+        document.getElementById("ai-response").innerText = "Error occurred while generating image.";
+    }
+}

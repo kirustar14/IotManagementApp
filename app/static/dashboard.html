@@ -142,6 +142,19 @@
         <input type="text" id="user-message" placeholder="Type a message..." onkeydown="if(event.key === 'Enter') sendMessage()">
     </div>
 
+    <!-- Add this inside the button container -->
+    <div class="button-container">
+        <input type="text" id="image-prompt" placeholder="Enter image description..." style="padding: 10px; width: 300px; border-radius: 5px; border: 1px solid #ddd;">
+        <button onclick="generateImage()">Generate Image</button>
+    </div>
+
+    <!-- Modify the AI Response Display -->
+    <div class="response-container">
+        <div id="ai-response"></div>
+        <img id="ai-image" src="" alt="Generated Image" style="display:none; max-width: 500px; border-radius: 10px;">
+    </div>
+
+
     <script src="/static/dashboard.js"></script>
 </body>
 </html>
