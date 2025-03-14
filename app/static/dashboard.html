@@ -244,7 +244,7 @@
 
         // Fetch data from the API
         async function fetchData(sensorType) {
-            const response = await fetch(`http://localhost:8000/api/${sensorType}`);
+            const response = await fetch(`/api/${sensorType}`);
             const data = await response.json();
             
             if (sensorType === 'temperature') {
@@ -323,7 +323,7 @@
 
         // Handle "What Should I Wear?" button click
         async function getOutfitSuggestion() {
-            const outfitResponse = await fetch("http://localhost:8000/api/outfit");
+            const outfitResponse = await fetch("/api/outfit");
             const data = await outfitResponse.json();
             document.getElementById("ai-response").textContent = data.suggestion;
         }
@@ -331,7 +331,7 @@
         // Handle Image Generation button click
         async function generateImage() {
             const prompt = document.getElementById('image-prompt').value;
-            const response = await fetch(`http://localhost:8000/api/image`, {
+            const response = await fetch(`/api/image`, {
                 method: 'POST',
                 body: JSON.stringify({ prompt }),
                 headers: {
