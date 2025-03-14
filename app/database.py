@@ -121,7 +121,7 @@ async def setup_database(initial_users: dict = None):
                 FOREIGN KEY (device_id) REFERENCES devices(device_id) ON DELETE CASCADE
             )
         """
-    }
+    } 
 
     try:
         # Get database connection

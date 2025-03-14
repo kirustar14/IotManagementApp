@@ -435,7 +435,6 @@ async def register_device_form(request: Request, name: str):
     # Render the device registration form for the user
     return templates.TemplateResponse("register_device.html", {"request": request, "name": name, "user_id": user_id})
 
-
 @app.post("/register_device/{name}")
 async def register_device(
     request: Request, name: str, device: DeviceRegistration = Depends(DeviceRegistration.as_form)
@@ -459,7 +458,7 @@ async def register_device(
 
     device_id = latest_device_id if latest_device_id else str(uuid.uuid4())
 
-    # Check if the device already exists for this user (not across all users)
+    # Check if the device already exists for the current user
     devices = await get_user_devices(user_id)
     existing_device = next((d for d in devices if d["device_id"] == device_id), None)
     
@@ -470,12 +469,11 @@ async def register_device(
             {
                 "request": request,
                 "name": name,
-                "message": message,  # Error message when device is already registered for this user
-                "back_to_profile": True  # Flag to show back to profile button
+                "message": message,  
+                "back_to_profile": True 
             }
         )
     else:
-        # Allow the same device_id for different users
         # Add the device for the current user
         await add_device(user_id, device_id, device.device_name)
         message = "Device registered successfully!"
@@ -487,8 +485,8 @@ async def register_device(
                 "message": message,  
                 "back_to_profile": True 
             }
-        ) 
- 
+        )
+
 
 @app.get("/view_devices/{name}", response_class=HTMLResponse)
 async def view_devices(request: Request, name: str):
@@ -743,7 +741,6 @@ async def get_sensor_data(sensor_type: str, request: Request,
 async def insert_sensor_data(sensor_type: str, sensor_data: SensorData):
         # Validate the sensor type
         validate_sensor_type(sensor_type)
-
         # Parse timestamp or use current time
         timestamp = datetime.strptime(sensor_data.timestamp, "%Y-%m-%d %H:%M:%S") if sensor_data.timestamp else datetime.now()
         device_id = sensor_data.device_id
