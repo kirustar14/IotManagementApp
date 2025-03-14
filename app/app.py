@@ -750,6 +750,7 @@ async def insert_sensor_data(sensor_type: str, request: Request):
         # Manually parse JSON to check for formatting issues
         import json
         try:
+            print(json_data)
             json_data = json.loads(raw_body)
             print("Parsed JSON Data:", json_data)
         except json.JSONDecodeError as e:
