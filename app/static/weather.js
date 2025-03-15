@@ -3,6 +3,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("city");
     const info = document.querySelector(".info");
 
+    let temperature = null;  // Declare a variable to store temperature
+
     // Make sure the form is available
     if (!form || !input || !info) {
         console.error("Form or input elements are missing!");
@@ -44,6 +46,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const conditionText = `Condition: ${weather.shortForecast}`;
             const tempText = `Temperature: ${weather.temperature}°F`;
 
+            // Store temperature for use in outfit suggestion
+            temperature = weather.temperature;
+
             // Step 5: Update the HTML with weather information
             info.innerHTML = `
                 <p><strong>${locationText}</strong></p>
@@ -55,8 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-}); 
-
+});
 
 // Handle "What Should I Wear" button click
 async function getOutfitSuggestion(temperature) {
@@ -74,4 +78,4 @@ async function getOutfitSuggestion(temperature) {
         console.error("Error fetching AI response:", error);
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
-} 
+}
