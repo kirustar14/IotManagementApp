@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
 async function getOutfitSuggestion(temperature) {
     try {
         document.getElementById("ai-response").innerText = "Fetching outfit recommendation...";
-        const response = await fetch("http://localhost:8000/get-outfit", { 
+        const response = await fetch("http:https://iotmanagementapp.onrender.com/get-outfit", { 
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ temperature: temperature })
