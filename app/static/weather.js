@@ -3,11 +3,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("city");
     const info = document.querySelector(".info");
 
+    const button = document.querySelector("button"); // Select the button here
+
     let temperature = null;  // Base temperature is set to null
 
     // Make sure the form is available
-    if (!form || !input || !info) {
-        console.error("Form or input elements are missing!");
+    if (!form || !input || !info || !button) {
+        console.error("Form, input, or button elements are missing!");
         return;
     }
 
@@ -60,9 +62,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Handle "What Should I Wear" button click
+    button.addEventListener("click", function () {
+        if (temperature !== null) {
+            getOutfitSuggestion(temperature);
+        } else {
+            console.error("Temperature data is not available.");
+            alert("Please wait for the weather data to be loaded.");
+        }
+    });
+
 });
 
-// Handle "What Should I Wear" button click
 async function getOutfitSuggestion(temperature) {
     try {
         document.getElementById("ai-response").innerText = "Loading outfit recommendation...";
@@ -83,12 +94,3 @@ async function getOutfitSuggestion(temperature) {
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
 }
-
-button.addEventListener("click", function () {
-    if (temperature !== null) {
-        getOutfitSuggestion(temperature);
-    } else {
-        console.error("Temperature data is not available.");
-        alert("Please wait for the weather data to be loaded.");
-    }
-});
