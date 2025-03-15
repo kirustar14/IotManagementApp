@@ -78,19 +78,23 @@ async function getOutfitSuggestion(temperature) {
     try {
         document.getElementById("ai-response").innerText = "Loading outfit recommendation...";
         
-        // Simulate a loading time for outfit suggestion
-        setTimeout(async () => {
-            const response = await fetch("https://iotmanagementapp.onrender.com/get-outfit", { 
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ temperature: temperature })
-            });
+        const response = await fetch("https://iotmanagementapp.onrender.com/get-outfit", { 
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ temperature: temperature })
+        });
 
-            const data = await response.json();
-            document.getElementById("ai-response").innerText = data.result.response || "No recommendation available.";
-        }, 1000); 
+        const data = await response.json();
+
+        // Check if the response has the 'response' field
+        if (data && data.response) {
+            document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
+        } else {
+            document.getElementById("ai-response").innerText = "Failed to get a valid response.";
+        }
     } catch (error) {
         console.error("Error fetching AI response:", error);
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
 }
+
