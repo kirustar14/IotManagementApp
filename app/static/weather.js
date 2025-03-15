@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const tempText = `Temperature: ${weather.temperature}°F`;
 
             // Store temperature for use in outfit suggestion
-            temperature = weather.temperature;
+            temperature = weather.temperature | 0;
 
             // Step 5: Update the HTML with weather information
             info.innerHTML = `
@@ -77,9 +77,18 @@ async function getOutfitSuggestion(temperature) {
 
             const data = await response.json();
             document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
-        }, 1000); // Simulate a 1-second loading delay
+        }, 1000); 
     } catch (error) {
         console.error("Error fetching AI response:", error);
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
     }
 }
+
+button.addEventListener("click", function () {
+    if (temperature !== null) {
+        getOutfitSuggestion(temperature);
+    } else {
+        console.error("Temperature data is not available.");
+        alert("Please wait for the weather data to be loaded.");
+    }
+});

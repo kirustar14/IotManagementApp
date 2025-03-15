@@ -13,7 +13,7 @@ from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 import requests
 import base64
-import httpx
+import Body
 import traceback 
 
 from database import (
@@ -749,9 +749,9 @@ AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/comp
 IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/image"
 
 @app.post("/get-outfit")
-async def get_outfit(request: Request, temperature: float):
-
-    session_id = request.cookies.get("sessionId")
+async def get_outfit(request: Request, temperature: float = Body(...)):
+    print("trying to get outfit for " + temperature) 
+    session_id = request.cookies.get("sessionId") 
     if not session_id:
         return RedirectResponse(url="/login")
     
@@ -772,6 +772,7 @@ async def get_outfit(request: Request, temperature: float):
     wardrobe = await get_wardrobe_items(user_id)
     item_names = [item["item_name"] for item in wardrobe]
 
+    
     # Step 6: Create a prompt for AI based on available data
     if temperature is not None:
         prompt = f"Based on the current temperature of {temperature}°C and the wardrobe items: {', '.join(item_names)}, what should I wear today?"
@@ -791,6 +792,7 @@ async def get_outfit(request: Request, temperature: float):
             data = ai_response.json()
             return {"response": data["result"]["response"]}
         else:
+            print("failed api call")
             raise HTTPException(status_code=ai_response.status_code, detail="AI API request failed")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error fetching AI response: {str(e)}")
