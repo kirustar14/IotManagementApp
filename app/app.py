@@ -746,9 +746,13 @@ EMAIL = "kmarikumaran@ucsd.edu"
 PID = "A17877875"
 AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/complete"
 IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/image"
+
 @app.post("/get-outfit")
-async def get_outfit(request: Request, temperature: float = Body(...)):
-    print(f"Received temperature: {temperature}")  # This will print the temperature passed in the request
+async def get_outfit(request: Request):
+    data = await request.json()
+    temperature = data.get("prompt", "")
+    print(f"Received temperature: {temperature}")  
+    
     session_id = request.cookies.get("sessionId") 
     if not session_id:
         print("No session found, redirecting to login")
