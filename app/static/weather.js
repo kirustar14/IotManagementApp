@@ -87,7 +87,7 @@ async function getOutfitSuggestion(temperature) {
             });
 
             const data = await response.json();
-            document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
+            document.getElementById("ai-response").innerText = data.result.response || "No recommendation available.";
         }, 1000); 
     } catch (error) {
         console.error("Error fetching AI response:", error);
