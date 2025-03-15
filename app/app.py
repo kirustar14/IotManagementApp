@@ -746,36 +746,40 @@ EMAIL = "kmarikumaran@ucsd.edu"
 PID = "A17877875"
 AI_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/complete"
 IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/image"
-
 @app.post("/get-outfit")
 async def get_outfit(request: Request, temperature: float = Body(...)):
-    print("trying to get outfit for " + temperature) 
+    print(f"Received temperature: {temperature}")  # This will print the temperature passed in the request
     session_id = request.cookies.get("sessionId") 
     if not session_id:
+        print("No session found, redirecting to login")
         return RedirectResponse(url="/login")
     
     session = await get_session(session_id)
     if not session:
+        print("No valid session found, redirecting to login")
         return RedirectResponse(url="/login")
 
     user_id = session["user_id"]
     user_from_session = await get_user_by_id(user_id)
     if not user_from_session:
+        print("User not found, returning 404")
         return HTMLResponse(content="User not found", status_code=404)
 
     name = user_from_session["name"]
     if user_from_session["name"] != name:
+        print(f"Name mismatch, expected: {name}, actual: {user_from_session['name']}")
         return templates.TemplateResponse("error.html", {"request": request, "name": name})
 
     # Step 4: Fetch wardrobe items for the user
     wardrobe = await get_wardrobe_items(user_id)
     item_names = [item["item_name"] for item in wardrobe]
-
     
     # Step 6: Create a prompt for AI based on available data
     if temperature is not None:
+        print(f"Using temperature: {temperature}°C for prompt creation")
         prompt = f"Based on the current temperature of {temperature}°C and the wardrobe items: {', '.join(item_names)}, what should I wear today?"
     else:
+        print("No temperature provided, creating prompt without temperature")
         prompt = f"Based on the wardrobe items: {', '.join(item_names)}, what should I wear today? If I don't have anything, just suggest something for different weather options."
 
     headers = {
@@ -785,15 +789,18 @@ async def get_outfit(request: Request, temperature: float = Body(...)):
 
     try:
         # Use the AI API to generate the outfit recommendation
+        print(f"Sending request to AI API with prompt: {prompt}")
         ai_response = requests.post(AI_API_URL, headers=headers, json={"prompt": prompt})
 
         if ai_response.status_code == 200:
+            print(f"Received response from AI API: {ai_response.json()}")
             data = ai_response.json()
             return {"response": data["result"]["response"]}
         else:
-            print("failed api call")
+            print(f"Failed API call with status code: {ai_response.status_code}")
             raise HTTPException(status_code=ai_response.status_code, detail="AI API request failed")
     except Exception as e:
+        print(f"Error fetching AI response: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error fetching AI response: {str(e)}")
 
 
