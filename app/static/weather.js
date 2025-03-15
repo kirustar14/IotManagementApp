@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const input = document.getElementById("city");
     const info = document.querySelector(".info");
 
-    let temperature = null;  // Declare a variable to store temperature
+    let temperature = null;  // Base temperature is set to null
 
     // Make sure the form is available
     if (!form || !input || !info) {
@@ -65,15 +65,19 @@ document.addEventListener("DOMContentLoaded", function () {
 // Handle "What Should I Wear" button click
 async function getOutfitSuggestion(temperature) {
     try {
-        document.getElementById("ai-response").innerText = "Fetching outfit recommendation...";
-        const response = await fetch("https://iotmanagementapp.onrender.com/get-outfit", { 
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ temperature: temperature })
-        });
+        document.getElementById("ai-response").innerText = "Loading outfit recommendation...";
+        
+        // Simulate a loading time for outfit suggestion
+        setTimeout(async () => {
+            const response = await fetch("https://iotmanagementapp.onrender.com/get-outfit", { 
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ temperature: temperature })
+            });
 
-        const data = await response.json();
-        document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
+            const data = await response.json();
+            document.getElementById("ai-response").innerText = data.response || "No recommendation available.";
+        }, 1000); // Simulate a 1-second loading delay
     } catch (error) {
         console.error("Error fetching AI response:", error);
         document.getElementById("ai-response").innerText = "Failed to get outfit recommendation.";
