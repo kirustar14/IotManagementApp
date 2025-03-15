@@ -750,7 +750,7 @@ IMAGE_API_URL = "https://ece140-wi25-api.frosty-sky-f43d.workers.dev/api/v1/ai/i
 @app.post("/get-outfit")
 async def get_outfit(request: Request):
     data = await request.json()
-    temperature = data.get("prompt", "")
+    temperature = data.get("temperature", "")
     print(f"Received temperature: {temperature}")  
     
     session_id = request.cookies.get("sessionId") 
