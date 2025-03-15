@@ -7,4 +7,3 @@ python-dotenv
 jinja2
 requests
 httpx
-Body

@@ -1,6 +1,6 @@
 # wardrobe functionality 
 import uvicorn
-from fastapi import FastAPI, Request, Form, UploadFile, HTTPException, Depends,  Query
+from fastapi import FastAPI, Request, Form, UploadFile, HTTPException, Depends,  Query, Body
 from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 import uuid
 import os
@@ -13,7 +13,6 @@ from datetime import datetime
 from fastapi.staticfiles import StaticFiles
 import requests
 import base64
-import Body
 import traceback 
 
 from database import (
