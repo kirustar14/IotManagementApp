@@ -154,7 +154,7 @@ async function generateImage() {
             body: JSON.stringify({ prompt })
         });
 
-        const data = await response.json();
+        const data = await response.json(); 
 
         if (data.image_url) {
             document.getElementById("ai-image").src = data.image_url;
